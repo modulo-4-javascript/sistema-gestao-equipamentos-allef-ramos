@@ -11,8 +11,7 @@ export const appTheme: ThemeConfig = {
     colorBgContainer: '#FFFFFF',
     colorBorder: '#DDE6EE',
     borderRadius: 8,
-    fontFamily:
-      'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    fontFamily: 'Inter, sans-serif',
   },
   components: {
     Button: {
