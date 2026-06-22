@@ -1,47 +1,21 @@
 # Aula 05 - Estrutura visual, estilos e rotas
 
-## Objetivo da aula
+## Objetivo
 
-Nesta aula vamos montar a primeira versão visual do sistema DenkenHub com React + TypeScript. O foco é construir a tela de equipamentos a partir do Figma, organizar os componentes em pastas, usar `styled-components` e criar rotas simples com um layout compartilhado.
+Montar a base visual do sistema DenkenHub usando React, TypeScript, Ant Design, Material Icons e `styled-components`.
 
-Nesta etapa, a prioridade não é regra de negócio. A prioridade é o aluno entender como a interface é montada.
+A ideia da aula não é entregar tudo pronto. O projeto já tem várias partes preparadas e comentadas para serem descomentadas aos poucos durante a explicação.
 
-Ao final da aula, os alunos devem entender:
+## O foco da aula
 
-- Como criar rotas com `react-router-dom`.
-- Como compartilhar o mesmo layout entre páginas.
-- Como separar uma feature em `components`, `pages`, `mocks` e `types`.
-- Como criar componentes com `index.tsx` e `styles.ts`.
-- Como usar `styled-components` de forma simples.
-- Como usar Ant Design como base visual.
-- Como usar Material Icons em botões, cards, menu e tabela.
-- Como alimentar uma tela com mocks simples.
+- Entender a estrutura inicial do projeto.
+- Criar rotas com `react-router-dom`.
+- Reaproveitar um layout entre páginas.
+- Separar componentes em pastas com `index.tsx` e `styles.ts`.
+- Usar mocks simples para montar a interface.
+- Construir a tela de equipamentos seguindo o Figma.
 
-## Escopo da Aula 05
-
-O que faz parte desta aula:
-
-- Layout geral da aplicação com `Sidebar`, `Header` e área de conteúdo.
-- Rota `/equipment`.
-- Rota `/locations`.
-- Página simples de localizações para demonstrar navegação.
-- Tela visual de equipamentos.
-- Cards de resumo.
-- Filtros visuais.
-- Tabela visual.
-- Mocks simples.
-- Estilos com `styled-components`.
-
-O que fica para a Aula 06:
-
-- Filtros funcionando de verdade.
-- Formulário de novo equipamento.
-- Ações reais da tabela.
-- Tela de detalhes.
-- Integração com API.
-- Backend, autenticação e persistência.
-
-## Estrutura de pastas
+## Estrutura principal
 
 ```txt
 frontend/src
@@ -77,164 +51,77 @@ NomeDoComponente
 └── styles.ts
 ```
 
-Exemplo:
+Esse padrão ajuda a separar a estrutura do componente dos estilos.
 
-```txt
-frontend/src/features/equipment/components/EquipmentFilters
-├── index.tsx
-└── styles.ts
-```
+## O que está comentado para a aula
 
-Use esta explicação em aula:
+| Arquivo | O que fazer em aula |
+| --- | --- |
+| `frontend/index.html` | Colar/descomentar o link da fonte Inter do Google Fonts. |
+| `src/app/routes.tsx` | Importar `Route` e `Navigate`, descomentar as páginas e criar as rotas `/equipment` e `/locations`. |
+| `src/app/layout/AppLayout/index.tsx` | Descomentar `Sidebar`, `Header` e seus imports para montar o layout compartilhado. |
+| `src/features/equipment/pages/EquipmentPage/index.tsx` | Descomentar imports, estados, handlers, mocks e componentes da tela principal. |
+| `src/features/locations/pages/LocationsPage/index.tsx` | Descomentar o conteúdo simples da página e importar `Title` e `Description` dos estilos. |
 
-> O `index.tsx` mostra a estrutura e a lógica simples. O `styles.ts` mostra a aparência. Separar assim ajuda a turma a encontrar cada parte do componente.
-
-## Estilos globais
-
-O arquivo global ficou propositalmente simples:
-
-```txt
-frontend/src/app/styles/global.css
-```
-
-Ele contém apenas:
-
-- `box-sizing`.
-- estilos básicos do `body`.
-- fonte padrão.
-- herança de fonte para campos e botões.
-
-As cores ficam diretamente nos `styles.ts` dos componentes. Isso deixa mais fácil para alunos iniciantes enxergarem de onde vem cada cor.
-
-## Tema do Ant Design
-
-O arquivo abaixo guarda a configuração do Ant Design:
-
-```txt
-frontend/src/app/theme/appTheme.ts
-```
-
-Ele define a cor primária, fonte, bordas e ajustes básicos de componentes como `Button`, `Card` e `Table`.
-
-## Rotas criadas
-
-Arquivo:
-
-```txt
-frontend/src/app/routes.tsx
-```
-
-Rotas da Aula 05:
+## Rotas da aula
 
 ```txt
 /equipment
 /locations
 ```
 
-A rota `/` redireciona para `/equipment`.
+A rota `/` deve redirecionar para `/equipment`.
 
-A rota `/locations` existe para mostrar que o mesmo layout pode ser reutilizado por outra página, mesmo que a tela ainda tenha apenas um texto simples.
+## Componentes principais
 
-## Layout compartilhado
+- `AppLayout`: estrutura geral com menu lateral, header e conteúdo.
+- `Sidebar`: navegação principal da aplicação.
+- `Header`: mostra o nome da página atual.
+- `PageHeader`: título, descrição e botão "Novo equipamento".
+- `SummaryCards`: cards de resumo usando dados mockados.
+- `EquipmentFilters`: filtros visuais da tela.
+- `EquipmentTable`: tabela de equipamentos.
+- `StatusBadge`: status visual de cada equipamento.
 
-Pasta:
+## Mocks e tipos
 
-```txt
-frontend/src/app/layout
-```
+- Mocks: `src/features/equipment/mocks/equipment.mock.ts`
+- Tipos: `src/features/equipment/types/equipment.ts`
 
-Componentes:
+Os mocks simulam dados que futuramente podem vir de uma API.
 
-- `AppLayout`: monta a estrutura com sidebar, header e conteúdo.
-- `Sidebar`: menu lateral com os links do sistema.
-- `Header`: barra superior com o nome da página atual.
+## Ordem sugerida da aula
 
-Ponto importante:
+1. Mostrar o Figma e identificar as áreas da tela.
+2. Explicar `global.css`, `appTheme.ts` e o link da fonte no `index.html`.
+3. Descomentar e explicar as rotas em `routes.tsx`.
+4. Montar o layout com `AppLayout`, `Sidebar` e `Header`.
+5. Abrir `/equipment`.
+6. Descomentar a tela `EquipmentPage` por partes.
+7. Mostrar os mocks e os tipos.
+8. Explicar `PageHeader`, `SummaryCards`, `EquipmentFilters`, `EquipmentTable` e `StatusBadge`.
+9. Abrir `/locations` para mostrar o reaproveitamento do layout.
 
-> O layout fica em `app` porque ele pertence à aplicação inteira, não somente à feature de equipamentos.
+## Fica para a Aula 06
 
-## Feature de equipamentos
-
-Pasta:
-
-```txt
-frontend/src/features/equipment
-```
-
-Principais partes:
-
-- `pages/EquipmentPage`: página principal da feature.
-- `components/PageHeader`: título, descrição e botão principal.
-- `components/SummaryCards`: cards de resumo.
-- `components/EquipmentFilters`: filtros visuais.
-- `components/EquipmentTable`: tabela visual.
-- `components/StatusBadge`: tag visual de status.
-- `mocks/equipment.mock.ts`: dados simples para renderizar a tela.
-- `types/equipment.ts`: tipos usados na feature.
-
-## Feature de localizações
-
-Pasta:
-
-```txt
-frontend/src/features/locations
-```
-
-Nesta aula, a página de localizações é propositalmente simples. Ela serve para demonstrar:
-
-- criação de uma nova rota;
-- reaproveitamento do `AppLayout`;
-- troca do item ativo no menu lateral;
-- troca do texto no header.
-
-## Roteiro sugerido da aula
-
-1. Abrir o Figma e identificar as áreas da tela.
-2. Mostrar `App.tsx` e explicar os providers.
-3. Mostrar `routes.tsx` e explicar `/equipment` e `/locations`.
-4. Mostrar `AppLayout`, `Sidebar` e `Header`.
-5. Abrir `/equipment` no navegador.
-6. Mostrar a estrutura da feature de equipamentos.
-7. Mostrar os mocks.
-8. Mostrar `PageHeader`.
-9. Mostrar `SummaryCards`.
-10. Mostrar `EquipmentFilters`.
-11. Mostrar `EquipmentTable`.
-12. Mostrar `StatusBadge`.
-13. Abrir `/locations` e mostrar que o layout foi reaproveitado.
-14. Revisar a organização dos arquivos.
-
-## Checklist para os alunos
-
-Ao final da aula, os alunos devem conseguir responder:
-
-- Onde ficam as rotas?
-- Onde fica o layout compartilhado?
-- Qual arquivo cria o menu lateral?
-- Qual arquivo cria o header?
-- Como a página de equipamentos usa o layout?
-- Onde estão os mocks?
-- Por que cada componente tem `index.tsx` e `styles.ts`?
-- Onde estão os estilos globais?
-- Por que usamos `styled-components` nos componentes?
+- Filtros funcionando de verdade.
+- Formulário de novo equipamento.
+- Ações reais na tabela.
+- Tela de detalhes.
+- Integração com API.
+- Backend, autenticação e persistência.
 
 ## Comandos úteis
-
-Rodar o projeto:
 
 ```bash
 cd frontend
 npm run dev
 ```
 
-Verificar lint:
-
 ```bash
 cd frontend
 npm run lint
 ```
-
-Gerar build:
 
 ```bash
 cd frontend
