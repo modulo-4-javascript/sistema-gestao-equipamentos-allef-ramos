@@ -1,4 +1,3 @@
-import AutorenewOutlined from '@mui/icons-material/AutorenewOutlined'
 import { Form, Input, Select } from 'antd'
 import { useEffect } from 'react'
 import type { Equipment, EquipmentStatus, EquipmentType } from '../../types/equipment'
@@ -22,7 +21,7 @@ const emptyEquipmentForm = {
   type: undefined,
   model: '',
   status: undefined,
-  location: '',
+  location: undefined,
   serialNumber: '',
   observations: '',
 }
@@ -39,14 +38,13 @@ export function EquipmentFormModal({
 }: EquipmentFormModalProps) {
   const [form] = Form.useForm()
   const isEditing = mode === 'edit'
-  const initialValues = equipment ?? emptyEquipmentForm
 
   useEffect(() => {
     if (open) {
       form.resetFields()
-      form.setFieldsValue(initialValues)
+      form.setFieldsValue(emptyEquipmentForm)
     }
-  }, [form, initialValues, open])
+  }, [form, open])
 
   function handleSubmit() {
     form
@@ -63,15 +61,12 @@ export function EquipmentFormModal({
       destroyOnHidden
       open={open}
       title={isEditing ? 'Editar equipamento' : 'Novo equipamento'}
-      okText="Salvando..."
+      okText="Salvar"
       cancelText="Cancelar"
       width={800}
       maskStyle={{
         backdropFilter: 'blur(2px)',
         background: 'rgb(0 0 0 / 45%)',
-      }}
-      okButtonProps={{
-        icon: <AutorenewOutlined fontSize="small" />,
       }}
       onCancel={onCancel}
       onOk={handleSubmit}
@@ -80,7 +75,7 @@ export function EquipmentFormModal({
         form={form}
         key={`${mode}-${equipment?.id ?? 'empty'}`}
         layout="vertical"
-        initialValues={initialValues}
+        initialValues={emptyEquipmentForm}
         requiredMark={false}
       >
         <FormGrid>
