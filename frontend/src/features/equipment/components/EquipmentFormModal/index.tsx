@@ -50,9 +50,9 @@ export function EquipmentFormModal({
     form
       .validateFields()
       .then(() => {
-        onSubmit()
+        onSubmit();
       })
-      .catch(() => undefined)
+      .catch(() => undefined);
   }
 
   return (
@@ -60,20 +60,19 @@ export function EquipmentFormModal({
       centered
       destroyOnHidden
       open={open}
-      title={isEditing ? 'Editar equipamento' : 'Novo equipamento'}
+      title={isEditing ? "Editar equipamento" : "Novo equipamento"}
       okText="Salvar"
       cancelText="Cancelar"
       width={800}
-      maskStyle={{
-        backdropFilter: 'blur(2px)',
-        background: 'rgb(0 0 0 / 45%)',
+      styles={{
+        mask: { backdropFilter: "blur(2px)", background: "rgb(0 0 0 / 45%)" },
       }}
       onCancel={onCancel}
       onOk={handleSubmit}
     >
       <Form
         form={form}
-        key={`${mode}-${equipment?.id ?? 'empty'}`}
+        key={`${mode}-${equipment?.id ?? "empty"}`}
         layout="vertical"
         initialValues={emptyEquipmentForm}
         requiredMark={false}
@@ -82,7 +81,9 @@ export function EquipmentFormModal({
           <Form.Item
             label="Nome do equipamento *"
             name="name"
-            rules={[{ required: true, message: 'Informe o nome do equipamento.' }]}
+            rules={[
+              { required: true, message: "Informe o nome do equipamento." },
+            ]}
           >
             <Input placeholder="Ex: SN-12345" />
           </Form.Item>
@@ -133,5 +134,5 @@ export function EquipmentFormModal({
         </FormGrid>
       </Form>
     </FormModal>
-  )
+  );
 }
