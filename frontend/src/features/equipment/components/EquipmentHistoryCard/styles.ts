@@ -3,8 +3,25 @@ import styled from 'styled-components'
 
 export const HistoryCard = styled(Card)`
   &.ant-card {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 100%;
     border-color: #dde6ee;
     box-shadow: 0 1px 2px rgb(17 24 39 / 5%);
+  }
+
+  .ant-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  @media (max-width: 1100px) {
+    &.ant-card {
+      flex: initial;
+      min-height: auto;
+    }
   }
 `
 
@@ -20,6 +37,7 @@ export const Timeline = styled.ol`
   position: relative;
   display: grid;
   gap: 24px;
+  align-content: start;
   margin: 0;
   padding: 0 0 0 24px;
   list-style: none;

@@ -8,6 +8,7 @@ export const Container = styled.section`
 export const ContentGrid = styled.div`
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(360px, 0.85fr);
+  align-items: stretch;
   gap: 24px;
 
   @media (max-width: 1100px) {
@@ -21,9 +22,9 @@ export const MainColumn = styled.div`
 `
 
 export const SideColumn = styled.aside`
-  display: grid;
-  align-content: start;
-  gap: 24px;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
 `
 
 export const StarterBox = styled.div`
