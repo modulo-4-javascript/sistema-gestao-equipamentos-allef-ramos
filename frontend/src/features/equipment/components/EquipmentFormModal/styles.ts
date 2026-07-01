@@ -59,7 +59,7 @@ export const FormModal = styled(Modal)`
   }
 
   .ant-modal-footer .ant-btn-primary {
-    min-width: 152px;
+    min-width: 80px;
     border: 0;
     background: linear-gradient(90deg, #003f8f, #005f9e);
     box-shadow: 0 1px 1px rgb(0 0 0 / 5%);
@@ -99,9 +99,13 @@ export const FormModal = styled(Modal)`
     resize: none;
   }
 
-  .ant-input::placeholder,
-  .ant-select-selection-placeholder {
+  .ant-input::placeholder {
     color: rgb(115 119 131 / 60%) !important;
+    font-size: 14px;
+  }
+
+  .ant-select-selection-placeholder {
+    color: #141b2b !important;
     font-size: 14px;
   }
 
