@@ -30,3 +30,29 @@ export interface EquipmentSummary {
   lineColor: string
   iconBackground: string
 }
+
+export interface EquipmentResponsible {
+  initials: string
+  name: string
+}
+
+export interface EquipmentHistoryItem {
+  id: string
+  date: string
+  title: string
+  description: string
+}
+
+export interface EquipmentDetail extends Equipment {
+  responsible: EquipmentResponsible
+  createdAt: string
+  notes: string
+  history: EquipmentHistoryItem[]
+}
+
+export interface EquipmentDetailSummary {
+  id: string
+  title: string
+  value: string
+  description: string
+}

@@ -3,6 +3,7 @@ import ComputerOutlined from '@mui/icons-material/ComputerOutlined'
 import DeleteOutlineOutlined from '@mui/icons-material/DeleteOutlineOutlined'
 import EditOutlined from '@mui/icons-material/EditOutlined'
 import MoreHorizOutlined from '@mui/icons-material/MoreHorizOutlined'
+import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined'
 import { Dropdown, Table } from 'antd'
 import type { TableProps } from 'antd'
 import type { Equipment } from '../../types/equipment'
@@ -21,12 +22,14 @@ interface EquipmentTableProps {
   onChangeStatusEquipment: (equipment: Equipment) => void
   onEditEquipment: (equipment: Equipment) => void
   onRemoveEquipment: (equipment: Equipment) => void
+  onViewEquipment?: (equipment: Equipment) => void
 }
 
 interface EquipmentTableActions {
   onChangeStatusEquipment: (equipment: Equipment) => void
   onEditEquipment: (equipment: Equipment) => void
   onRemoveEquipment: (equipment: Equipment) => void
+  onViewEquipment?: (equipment: Equipment) => void
 }
 
 // As colunas dizem para o Ant Design como a tabela deve montar cada campo.
@@ -34,6 +37,7 @@ function getColumns({
   onChangeStatusEquipment,
   onEditEquipment,
   onRemoveEquipment,
+  onViewEquipment,
 }: EquipmentTableActions): TableProps<Equipment>['columns'] {
   return [
     {
@@ -89,6 +93,10 @@ function getColumns({
           trigger={['click']}
           menu={{
             onClick: ({ key }) => {
+              if (key === 'view' && onViewEquipment) {
+                onViewEquipment(equipment)
+              }
+
               if (key === 'edit') {
                 onEditEquipment(equipment)
               }
@@ -102,6 +110,15 @@ function getColumns({
               }
             },
             items: [
+              ...(onViewEquipment
+                ? [
+                    {
+                      key: 'view',
+                      icon: <VisibilityOutlined fontSize="small" />,
+                      label: 'Visualizar',
+                    },
+                  ]
+                : []),
               {
                 key: 'edit',
                 icon: <EditOutlined fontSize="small" />,
@@ -137,6 +154,7 @@ export function EquipmentTable({
   onChangeStatusEquipment,
   onEditEquipment,
   onRemoveEquipment,
+  onViewEquipment,
 }: EquipmentTableProps) {
   return (
     <TableCard styles={{ body: { padding: 0 } }}>
@@ -146,6 +164,7 @@ export function EquipmentTable({
           onChangeStatusEquipment,
           onEditEquipment,
           onRemoveEquipment,
+          onViewEquipment,
         })}
         dataSource={equipments}
         pagination={false}
