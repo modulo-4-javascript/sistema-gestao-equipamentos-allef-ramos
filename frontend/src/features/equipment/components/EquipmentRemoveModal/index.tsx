@@ -1,7 +1,5 @@
-import DeleteOutlineOutlined from '@mui/icons-material/DeleteOutlineOutlined'
-import { Modal } from 'antd'
 import type { Equipment } from '../../types/equipment'
-import { Content, EquipmentName, Hint, IconBox, Message, WarningBox } from './styles'
+import { Hint, Message, RemoveModal } from './styles'
 
 interface EquipmentRemoveModalProps {
   equipment?: Equipment
@@ -16,32 +14,26 @@ export function EquipmentRemoveModal({
   onCancel,
   onConfirm,
 }: EquipmentRemoveModalProps) {
+  const equipmentLabel = equipment ? `${equipment.name} ${equipment.model}` : 'este equipamento'
+
   return (
-    <Modal
+    <RemoveModal
+      centered
       open={open}
-      title="Remover equipamento"
-      okText="Remover"
+      title="Excluir equipamento"
+      okText="Excluir"
       cancelText="Cancelar"
       okButtonProps={{ danger: true }}
+      width={440}
+      maskStyle={{
+        backdropFilter: 'blur(2px)',
+        background: 'rgb(0 0 0 / 45%)',
+      }}
       onCancel={onCancel}
       onOk={onConfirm}
     >
-      <WarningBox>
-        <IconBox>
-          <DeleteOutlineOutlined fontSize="small" />
-        </IconBox>
-
-        <Content>
-          <Message>
-            Você está removendo{' '}
-            <EquipmentName>{equipment?.name ?? 'este equipamento'}</EquipmentName> da listagem.
-          </Message>
-          <Hint>
-            Esta confirmação ainda é apenas visual. A remoção real será conectada quando existir
-            integração com a API.
-          </Hint>
-        </Content>
-      </WarningBox>
-    </Modal>
+      <Message>Deseja excluir "{equipmentLabel}"?</Message>
+      <Hint>Essa ação não poderá ser desfeita.</Hint>
+    </RemoveModal>
   )
 }

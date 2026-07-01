@@ -1,11 +1,11 @@
 import { message } from 'antd'
 import { useState } from 'react'
 import { AppLayout } from '../../../../app/layout/AppLayout'
-import { EquipmentDetailsModal } from '../../components/EquipmentDetailsModal'
 import { EquipmentFilters } from '../../components/EquipmentFilters'
 import { EquipmentFormModal } from '../../components/EquipmentFormModal'
 import type { EquipmentFormMode } from '../../components/EquipmentFormModal'
 import { EquipmentRemoveModal } from '../../components/EquipmentRemoveModal'
+import { EquipmentStatusModal } from '../../components/EquipmentStatusModal'
 import { EquipmentTable } from '../../components/EquipmentTable'
 import { PageHeader } from '../../components/PageHeader'
 import { SummaryCards } from '../../components/SummaryCards'
@@ -28,7 +28,7 @@ export function EquipmentPage() {
   const [formMode, setFormMode] = useState<EquipmentFormMode>('create')
   const [isFormModalOpen, setIsFormModalOpen] = useState(false)
   const [equipmentInForm, setEquipmentInForm] = useState<Equipment>()
-  const [equipmentInDetails, setEquipmentInDetails] = useState<Equipment>()
+  const [equipmentInStatus, setEquipmentInStatus] = useState<Equipment>()
   const [equipmentToRemove, setEquipmentToRemove] = useState<Equipment>()
 
   function handleCreateEquipment() {
@@ -41,10 +41,6 @@ export function EquipmentPage() {
     setFormMode('edit')
     setEquipmentInForm(equipment)
     setIsFormModalOpen(true)
-  }
-
-  function handleViewEquipment(equipment: Equipment) {
-    setEquipmentInDetails(equipment)
   }
 
   function handleCloseFormModal() {
@@ -62,14 +58,14 @@ export function EquipmentPage() {
     handleCloseFormModal()
   }
 
-  function handleEditFromDetails(equipment: Equipment) {
-    setEquipmentInDetails(undefined)
-    handleEditEquipment(equipment)
+  function handleConfirmRemoveEquipment() {
+    messageApi.success('Exclusão simulada com sucesso.')
+    setEquipmentToRemove(undefined)
   }
 
-  function handleConfirmRemoveEquipment() {
-    messageApi.success('Remoção simulada com sucesso.')
-    setEquipmentToRemove(undefined)
+  function handleSubmitStatusModal() {
+    messageApi.success('Status atualizado visualmente.')
+    setEquipmentInStatus(undefined)
   }
 
   function handleClearFilters() {
@@ -82,6 +78,7 @@ export function EquipmentPage() {
   // AULA 05 - parte prática:
   // Primeiro deixamos a lista sem filtro para a tela aparecer.
   const visibleEquipment = equipmentMock
+  const locationOptions = Array.from(new Set(equipmentMock.map((equipment) => equipment.location)))
 
   return (
     <AppLayout currentPage="Equipamentos">
@@ -109,13 +106,14 @@ export function EquipmentPage() {
         {/* Tabela principal: recebe a lista que, depois, será filtrada. */}
         <EquipmentTable
           equipments={visibleEquipment}
+          onChangeStatusEquipment={setEquipmentInStatus}
           onEditEquipment={handleEditEquipment}
           onRemoveEquipment={setEquipmentToRemove}
-          onViewEquipment={handleViewEquipment}
         />
 
         <EquipmentFormModal
           equipment={equipmentInForm}
+          locationOptions={locationOptions}
           mode={formMode}
           open={isFormModalOpen}
           statusOptions={statusOptions}
@@ -124,11 +122,12 @@ export function EquipmentPage() {
           onSubmit={handleSubmitFormModal}
         />
 
-        <EquipmentDetailsModal
-          equipment={equipmentInDetails}
-          open={Boolean(equipmentInDetails)}
-          onCancel={() => setEquipmentInDetails(undefined)}
-          onEdit={handleEditFromDetails}
+        <EquipmentStatusModal
+          equipment={equipmentInStatus}
+          open={Boolean(equipmentInStatus)}
+          statusOptions={statusOptions}
+          onCancel={() => setEquipmentInStatus(undefined)}
+          onSubmit={handleSubmitStatusModal}
         />
 
         <EquipmentRemoveModal

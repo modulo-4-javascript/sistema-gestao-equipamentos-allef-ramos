@@ -1,7 +1,7 @@
 import { Modal } from 'antd'
 import styled from 'styled-components'
 
-export const RemoveModal = styled(Modal)`
+export const StatusModal = styled(Modal)`
   .ant-modal-content {
     overflow: hidden;
     padding: 0;
@@ -30,7 +30,7 @@ export const RemoveModal = styled(Modal)`
   }
 
   .ant-modal-body {
-    padding: 4px 20px 20px;
+    padding: 4px 20px 0;
   }
 
   .ant-modal-footer {
@@ -54,27 +54,46 @@ export const RemoveModal = styled(Modal)`
     border-color: #d9d9d9;
   }
 
-  .ant-modal-footer .ant-btn-primary,
-  .ant-modal-footer .ant-btn-primary.ant-btn-dangerous {
-    min-width: 88px;
+  .ant-modal-footer .ant-btn-primary {
+    min-width: 80px;
     border: 0;
-    background: linear-gradient(90deg, #ff4d4f, #d9363e);
+    background: linear-gradient(90deg, #003f8f, #007c8c);
   }
 
   .ant-modal-footer .ant-btn-primary:hover,
   .ant-modal-footer .ant-btn-primary:focus {
-    background: linear-gradient(90deg, #ff4d4f, #d9363e) !important;
+    background: linear-gradient(90deg, #003f8f, #007c8c) !important;
+  }
+
+  .ant-form-item {
+    margin-bottom: 0;
+  }
+
+  .ant-form-item-label {
+    padding-bottom: 6px;
+  }
+
+  .ant-form-item-label > label {
+    height: 16px;
+    color: #111827;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .ant-select-selector {
+    min-height: 40px;
+    border-color: #d9d9d9 !important;
+    border-radius: 6px !important;
+  }
+
+  .ant-select-selection-placeholder {
+    color: #6b7280 !important;
+    font-size: 14px;
   }
 `
 
-export const Message = styled.p`
-  margin: 0;
-  color: #141b2b;
-  font-size: 14px;
-  line-height: normal;
-`
-
-export const Hint = styled.p`
+export const CurrentStatusText = styled.p`
   margin: 12px 0 0;
   color: #6b7280;
   font-size: 13px;

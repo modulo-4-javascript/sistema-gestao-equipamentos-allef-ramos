@@ -1,6 +1,8 @@
-import { Form, Input, Modal, Select } from 'antd'
+import AutorenewOutlined from '@mui/icons-material/AutorenewOutlined'
+import { Form, Input, Select } from 'antd'
+import { useEffect } from 'react'
 import type { Equipment, EquipmentStatus, EquipmentType } from '../../types/equipment'
-import { FormGrid, FullField, HelperText, ModalIntro } from './styles'
+import { FormGrid, FormModal, FullField } from './styles'
 
 export type EquipmentFormMode = 'create' | 'edit'
 
@@ -8,6 +10,7 @@ interface EquipmentFormModalProps {
   equipment?: Equipment
   mode: EquipmentFormMode
   open: boolean
+  locationOptions: string[]
   statusOptions: EquipmentStatus[]
   typeOptions: EquipmentType[]
   onCancel: () => void
@@ -15,69 +18,83 @@ interface EquipmentFormModalProps {
 }
 
 const emptyEquipmentForm = {
-  id: '',
   name: '',
   type: undefined,
   model: '',
-  status: 'Disponível',
+  status: undefined,
   location: '',
-  lastUpdate: '',
   serialNumber: '',
+  observations: '',
 }
 
 export function EquipmentFormModal({
   equipment,
   mode,
   open,
+  locationOptions,
   statusOptions,
   typeOptions,
   onCancel,
   onSubmit,
 }: EquipmentFormModalProps) {
+  const [form] = Form.useForm()
   const isEditing = mode === 'edit'
   const initialValues = equipment ?? emptyEquipmentForm
 
+  useEffect(() => {
+    if (open) {
+      form.resetFields()
+      form.setFieldsValue(initialValues)
+    }
+  }, [form, initialValues, open])
+
+  function handleSubmit() {
+    form
+      .validateFields()
+      .then(() => {
+        onSubmit()
+      })
+      .catch(() => undefined)
+  }
+
   return (
-    <Modal
+    <FormModal
+      centered
       destroyOnHidden
       open={open}
       title={isEditing ? 'Editar equipamento' : 'Novo equipamento'}
-      okText={isEditing ? 'Salvar alterações' : 'Cadastrar equipamento'}
+      okText="Salvando..."
       cancelText="Cancelar"
-      width={760}
+      width={800}
+      maskStyle={{
+        backdropFilter: 'blur(2px)',
+        background: 'rgb(0 0 0 / 45%)',
+      }}
+      okButtonProps={{
+        icon: <AutorenewOutlined fontSize="small" />,
+      }}
       onCancel={onCancel}
-      onOk={onSubmit}
-      centered
+      onOk={handleSubmit}
     >
-      <ModalIntro>
-        {isEditing
-          ? 'Atualize os dados principais do equipamento. Por enquanto, esta ação só simula o fluxo visual.'
-          : 'Preencha os dados principais para simular o cadastro de um novo equipamento.'}
-      </ModalIntro>
-
       <Form
+        form={form}
         key={`${mode}-${equipment?.id ?? 'empty'}`}
         layout="vertical"
         initialValues={initialValues}
+        requiredMark={false}
       >
         <FormGrid>
-          <Form.Item label="Código" name="id">
-            <Input placeholder="EQP-000" />
+          <Form.Item
+            label="Nome do equipamento *"
+            name="name"
+            rules={[{ required: true, message: 'Informe o nome do equipamento.' }]}
+          >
+            <Input placeholder="Ex: SN-12345" />
           </Form.Item>
-
-          <Form.Item label="Número de série" name="serialNumber">
-            <Input placeholder="Informe o número de série" />
-          </Form.Item>
-
-          <FullField>
-            <Form.Item label="Nome do equipamento" name="name">
-              <Input placeholder="Ex: Notebook Dell" />
-            </Form.Item>
-          </FullField>
 
           <Form.Item label="Tipo" name="type">
             <Select
-              placeholder="Selecione um tipo"
+              placeholder="Selecione o tipo..."
               options={typeOptions.map((type) => ({
                 label: type,
                 value: type,
@@ -85,9 +102,27 @@ export function EquipmentFormModal({
             />
           </Form.Item>
 
+          <Form.Item label="Modelo" name="model">
+            <Input placeholder="Ex: Sigma 300" />
+          </Form.Item>
+
+          <Form.Item label="Número de série" name="serialNumber">
+            <Input placeholder="Ex: SN-12345" />
+          </Form.Item>
+
+          <Form.Item label="Localização" name="location">
+            <Select
+              placeholder="Selecione o local..."
+              options={locationOptions.map((location) => ({
+                label: location,
+                value: location,
+              }))}
+            />
+          </Form.Item>
+
           <Form.Item label="Status" name="status">
             <Select
-              placeholder="Selecione um status"
+              placeholder="Selecione o status..."
               options={statusOptions.map((status) => ({
                 label: status,
                 value: status,
@@ -95,26 +130,13 @@ export function EquipmentFormModal({
             />
           </Form.Item>
 
-          <Form.Item label="Modelo" name="model">
-            <Input placeholder="Informe o modelo" />
-          </Form.Item>
-
-          <Form.Item label="Localização" name="location">
-            <Input placeholder="Ex: Lab 01" />
-          </Form.Item>
-
           <FullField>
-            <Form.Item label="Última atualização" name="lastUpdate">
-              <Input placeholder="Ex: 24 Out 2023" />
+            <Form.Item label="Observações" name="observations">
+              <Input.TextArea placeholder="Informações adicionais sobre o equipamento..." />
             </Form.Item>
           </FullField>
         </FormGrid>
       </Form>
-
-      <HelperText>
-        Os campos ainda não são enviados para uma API. A confirmação fecha o modal e mostra um
-        feedback visual.
-      </HelperText>
-    </Modal>
+    </FormModal>
   )
 }
