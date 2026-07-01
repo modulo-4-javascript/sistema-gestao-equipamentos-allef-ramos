@@ -1,7 +1,11 @@
 import { message } from 'antd'
 import { useState } from 'react'
 import { AppLayout } from '../../../../app/layout/AppLayout'
+import { EquipmentDetailsModal } from '../../components/EquipmentDetailsModal'
 import { EquipmentFilters } from '../../components/EquipmentFilters'
+import { EquipmentFormModal } from '../../components/EquipmentFormModal'
+import type { EquipmentFormMode } from '../../components/EquipmentFormModal'
+import { EquipmentRemoveModal } from '../../components/EquipmentRemoveModal'
 import { EquipmentTable } from '../../components/EquipmentTable'
 import { PageHeader } from '../../components/PageHeader'
 import { SummaryCards } from '../../components/SummaryCards'
@@ -11,7 +15,7 @@ import {
   statusOptions,
   typeOptions,
 } from '../../mocks/equipment.mock'
-import type { EquipmentStatus, EquipmentType } from '../../types/equipment'
+import type { Equipment, EquipmentStatus, EquipmentType } from '../../types/equipment'
 import { Container } from './styles'
 
 export function EquipmentPage() {
@@ -21,10 +25,51 @@ export function EquipmentPage() {
   const [searchText, setSearchText] = useState('')
   const [selectedStatus, setSelectedStatus] = useState<EquipmentStatus>()
   const [selectedType, setSelectedType] = useState<EquipmentType>()
+  const [formMode, setFormMode] = useState<EquipmentFormMode>('create')
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false)
+  const [equipmentInForm, setEquipmentInForm] = useState<Equipment>()
+  const [equipmentInDetails, setEquipmentInDetails] = useState<Equipment>()
+  const [equipmentToRemove, setEquipmentToRemove] = useState<Equipment>()
 
   function handleCreateEquipment() {
-    // Nesta aula, o botão existe para montarmos o visual do cabeçalho.
-    messageApi.info('Nesta aula vamos focar na construção visual da tela.')
+    setFormMode('create')
+    setEquipmentInForm(undefined)
+    setIsFormModalOpen(true)
+  }
+
+  function handleEditEquipment(equipment: Equipment) {
+    setFormMode('edit')
+    setEquipmentInForm(equipment)
+    setIsFormModalOpen(true)
+  }
+
+  function handleViewEquipment(equipment: Equipment) {
+    setEquipmentInDetails(equipment)
+  }
+
+  function handleCloseFormModal() {
+    setIsFormModalOpen(false)
+    setEquipmentInForm(undefined)
+  }
+
+  function handleSubmitFormModal() {
+    const feedback =
+      formMode === 'edit'
+        ? 'Alterações simuladas com sucesso.'
+        : 'Cadastro simulado com sucesso.'
+
+    messageApi.success(feedback)
+    handleCloseFormModal()
+  }
+
+  function handleEditFromDetails(equipment: Equipment) {
+    setEquipmentInDetails(undefined)
+    handleEditEquipment(equipment)
+  }
+
+  function handleConfirmRemoveEquipment() {
+    messageApi.success('Remoção simulada com sucesso.')
+    setEquipmentToRemove(undefined)
   }
 
   function handleClearFilters() {
@@ -62,7 +107,36 @@ export function EquipmentPage() {
         />
 
         {/* Tabela principal: recebe a lista que, depois, será filtrada. */}
-        <EquipmentTable equipments={visibleEquipment} />
+        <EquipmentTable
+          equipments={visibleEquipment}
+          onEditEquipment={handleEditEquipment}
+          onRemoveEquipment={setEquipmentToRemove}
+          onViewEquipment={handleViewEquipment}
+        />
+
+        <EquipmentFormModal
+          equipment={equipmentInForm}
+          mode={formMode}
+          open={isFormModalOpen}
+          statusOptions={statusOptions}
+          typeOptions={typeOptions}
+          onCancel={handleCloseFormModal}
+          onSubmit={handleSubmitFormModal}
+        />
+
+        <EquipmentDetailsModal
+          equipment={equipmentInDetails}
+          open={Boolean(equipmentInDetails)}
+          onCancel={() => setEquipmentInDetails(undefined)}
+          onEdit={handleEditFromDetails}
+        />
+
+        <EquipmentRemoveModal
+          equipment={equipmentToRemove}
+          open={Boolean(equipmentToRemove)}
+          onCancel={() => setEquipmentToRemove(undefined)}
+          onConfirm={handleConfirmRemoveEquipment}
+        />
       </Container>
     </AppLayout>
   )
