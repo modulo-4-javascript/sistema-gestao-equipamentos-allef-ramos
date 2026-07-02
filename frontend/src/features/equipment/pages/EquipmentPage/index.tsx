@@ -1,84 +1,96 @@
-import { message } from 'antd'
-import { useState } from 'react'
-import { AppLayout } from '../../../../app/layout/AppLayout'
-import { EquipmentFilters } from '../../components/EquipmentFilters'
-import { EquipmentFormModal } from '../../components/EquipmentFormModal'
-import type { EquipmentFormMode } from '../../components/EquipmentFormModal'
-import { EquipmentRemoveModal } from '../../components/EquipmentRemoveModal'
-import { EquipmentStatusModal } from '../../components/EquipmentStatusModal'
-import { EquipmentTable } from '../../components/EquipmentTable'
-import { PageHeader } from '../../components/PageHeader'
-import { SummaryCards } from '../../components/SummaryCards'
+import { message } from "antd";
+import { useState } from "react";
+import { AppLayout } from "../../../../app/layout/AppLayout";
+import { EquipmentFilters } from "../../components/EquipmentFilters";
+import { EquipmentFormModal } from "../../components/EquipmentFormModal";
+import type { EquipmentFormMode } from "../../components/EquipmentFormModal";
+import { EquipmentRemoveModal } from "../../components/EquipmentRemoveModal";
+import { EquipmentStatusModal } from "../../components/EquipmentStatusModal";
+import { EquipmentTable } from "../../components/EquipmentTable";
+import { PageHeader } from "../../components/PageHeader";
+import { SummaryCards } from "../../components/SummaryCards";
 import {
   equipmentMock,
   equipmentSummaryMock,
   statusOptions,
   typeOptions,
-} from '../../mocks/equipment.mock'
-import type { Equipment, EquipmentStatus, EquipmentType } from '../../types/equipment'
-import { Container } from './styles'
+} from "../../mocks/equipment.mock";
+import type {
+  Equipment,
+  EquipmentStatus,
+  EquipmentType,
+} from "../../types/equipment";
+import { Container } from "./styles";
+import { useNavigate } from "react-router-dom";
 
 export function EquipmentPage() {
-  const [messageApi, contextHolder] = message.useMessage()
+  const navigate = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
 
   // Estados dos filtros. Cada campo da área de filtros controla um estado aqui.
-  const [searchText, setSearchText] = useState('')
-  const [selectedStatus, setSelectedStatus] = useState<EquipmentStatus>()
-  const [selectedType, setSelectedType] = useState<EquipmentType>()
-  const [formMode, setFormMode] = useState<EquipmentFormMode>('create')
-  const [isFormModalOpen, setIsFormModalOpen] = useState(false)
-  const [equipmentInForm, setEquipmentInForm] = useState<Equipment>()
-  const [equipmentInStatus, setEquipmentInStatus] = useState<Equipment>()
-  const [equipmentToRemove, setEquipmentToRemove] = useState<Equipment>()
+  const [searchText, setSearchText] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState<EquipmentStatus>();
+  const [selectedType, setSelectedType] = useState<EquipmentType>();
+  const [formMode, setFormMode] = useState<EquipmentFormMode>("create");
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [equipmentInForm, setEquipmentInForm] = useState<Equipment>();
+  const [equipmentInStatus, setEquipmentInStatus] = useState<Equipment>();
+  const [equipmentToRemove, setEquipmentToRemove] = useState<Equipment>();
 
   function handleCreateEquipment() {
-    setFormMode('create')
-    setEquipmentInForm(undefined)
-    setIsFormModalOpen(true)
+    setFormMode("create");
+    setEquipmentInForm(undefined);
+    setIsFormModalOpen(true);
   }
 
   function handleEditEquipment(equipment: Equipment) {
-    setFormMode('edit')
-    setEquipmentInForm(equipment)
-    setIsFormModalOpen(true)
+    setFormMode("edit");
+    setEquipmentInForm(equipment);
+    setIsFormModalOpen(true);
   }
 
   function handleCloseFormModal() {
-    setIsFormModalOpen(false)
-    setEquipmentInForm(undefined)
+    setIsFormModalOpen(false);
+    setEquipmentInForm(undefined);
   }
 
   function handleSubmitFormModal() {
     const feedback =
-      formMode === 'edit'
-        ? 'Alterações simuladas com sucesso.'
-        : 'Cadastro simulado com sucesso.'
+      formMode === "edit"
+        ? "Alterações simuladas com sucesso."
+        : "Cadastro simulado com sucesso.";
 
-    messageApi.success(feedback)
-    handleCloseFormModal()
+    messageApi.success(feedback);
+    handleCloseFormModal();
   }
 
   function handleConfirmRemoveEquipment() {
-    messageApi.success('Exclusão simulada com sucesso.')
-    setEquipmentToRemove(undefined)
+    messageApi.success("Exclusão simulada com sucesso.");
+    setEquipmentToRemove(undefined);
   }
 
   function handleSubmitStatusModal() {
-    messageApi.success('Status atualizado visualmente.')
-    setEquipmentInStatus(undefined)
+    messageApi.success("Status atualizado visualmente.");
+    setEquipmentInStatus(undefined);
   }
 
   function handleClearFilters() {
     // Limpa todos os filtros e volta a tabela para o estado inicial.
-    setSearchText('')
-    setSelectedStatus(undefined)
-    setSelectedType(undefined)
+    setSearchText("");
+    setSelectedStatus(undefined);
+    setSelectedType(undefined);
+  }
+
+  function handleViewEquipment(equipment: Equipment) {
+    navigate(`/equipment/${equipment.id}`);
   }
 
   // AULA 05 - parte prática:
   // Primeiro deixamos a lista sem filtro para a tela aparecer.
-  const visibleEquipment = equipmentMock
-  const locationOptions = Array.from(new Set(equipmentMock.map((equipment) => equipment.location)))
+  const visibleEquipment = equipmentMock;
+  const locationOptions = Array.from(
+    new Set(equipmentMock.map((equipment) => equipment.location)),
+  );
 
   return (
     <AppLayout currentPage="Equipamentos">
@@ -109,6 +121,7 @@ export function EquipmentPage() {
           onChangeStatusEquipment={setEquipmentInStatus}
           onEditEquipment={handleEditEquipment}
           onRemoveEquipment={setEquipmentToRemove}
+          onViewEquipment={handleViewEquipment}
         />
 
         <EquipmentFormModal
@@ -138,5 +151,5 @@ export function EquipmentPage() {
         />
       </Container>
     </AppLayout>
-  )
+  );
 }
