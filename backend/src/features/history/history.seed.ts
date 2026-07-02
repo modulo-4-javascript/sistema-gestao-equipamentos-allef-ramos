@@ -18,7 +18,7 @@ export const historySeed: HistoryItem[] = [
     equipmentId: EQUIPMENT_SEED_IDS.monitor,
     toLocationId: LOCATION_SEED_IDS.lab01,
     title: "Vinculado a localizacao",
-    description: "Monitor da Bancada 01 foi vinculado ao Laboratorio de Informatica 01.",
+    description: "Monitor da Bancada 01 foi vinculado ao Lab Info 1.",
     createdAt: "2026-01-15T10:06:00.000Z"
   },
   {
@@ -36,7 +36,7 @@ export const historySeed: HistoryItem[] = [
     equipmentId: EQUIPMENT_SEED_IDS.router,
     toLocationId: LOCATION_SEED_IDS.network,
     title: "Vinculado a localizacao",
-    description: "Roteador Principal do Lab foi vinculado a Sala de Redes.",
+    description: "Roteador Principal do Lab foi vinculado a Redes.",
     createdAt: "2026-01-15T10:16:00.000Z"
   },
   {

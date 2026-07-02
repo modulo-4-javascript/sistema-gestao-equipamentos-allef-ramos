@@ -12,8 +12,8 @@ export const LOCATION_SEED_IDS = {
 export const locationsSeed: Location[] = [
   {
     id: LOCATION_SEED_IDS.lab01,
-    code: "LAB-INFO-01",
-    name: "Laboratorio de Informatica 01",
+    code: "LAB-1",
+    name: "Lab Info 1",
     type: LocationType.LABORATORY,
     building: "Bloco A",
     floor: "1o andar",
@@ -25,8 +25,8 @@ export const locationsSeed: Location[] = [
   },
   {
     id: LOCATION_SEED_IDS.lab02,
-    code: "LAB-MAKER",
-    name: "Laboratorio Maker",
+    code: "MAKER",
+    name: "Lab Maker",
     type: LocationType.LABORATORY,
     building: "Bloco A",
     floor: "1o andar",
@@ -39,7 +39,7 @@ export const locationsSeed: Location[] = [
   {
     id: LOCATION_SEED_IDS.coordination,
     code: "COORD",
-    name: "Coordenacao do Curso",
+    name: "Coordenacao",
     type: LocationType.OFFICE,
     building: "Bloco Administrativo",
     floor: "2o andar",
@@ -52,7 +52,7 @@ export const locationsSeed: Location[] = [
   {
     id: LOCATION_SEED_IDS.storage,
     code: "ALMOX",
-    name: "Almoxarifado de Equipamentos",
+    name: "Almoxarifado",
     type: LocationType.STORAGE,
     building: "Bloco de Apoio",
     floor: "Terreo",
@@ -65,7 +65,7 @@ export const locationsSeed: Location[] = [
   {
     id: LOCATION_SEED_IDS.maintenance,
     code: "MANUT",
-    name: "Sala de Manutencao",
+    name: "Manutencao",
     type: LocationType.MAINTENANCE,
     building: "Bloco de Apoio",
     floor: "Terreo",
@@ -78,7 +78,7 @@ export const locationsSeed: Location[] = [
   {
     id: LOCATION_SEED_IDS.network,
     code: "REDES",
-    name: "Sala de Redes",
+    name: "Redes",
     type: LocationType.NETWORK,
     building: "Bloco A",
     floor: "Terreo",
