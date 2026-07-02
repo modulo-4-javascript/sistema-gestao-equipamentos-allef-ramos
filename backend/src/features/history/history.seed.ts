@@ -8,8 +8,8 @@ export const historySeed: HistoryItem[] = [
     type: EquipmentHistoryType.CREATED,
     equipmentId: EQUIPMENT_SEED_IDS.notebook,
     toLocationId: LOCATION_SEED_IDS.lab01,
-    title: "Equipment created",
-    description: "Dell Notebook was registered in the inventory.",
+    title: "Equipamento cadastrado",
+    description: "Notebook do Professor foi registrado no inventario.",
     createdAt: "2026-01-15T10:00:00.000Z"
   },
   {
@@ -17,8 +17,8 @@ export const historySeed: HistoryItem[] = [
     type: EquipmentHistoryType.LINKED_TO_LOCATION,
     equipmentId: EQUIPMENT_SEED_IDS.monitor,
     toLocationId: LOCATION_SEED_IDS.lab01,
-    title: "Linked to location",
-    description: "LG Monitor was linked to Lab 01.",
+    title: "Vinculado a localizacao",
+    description: "Monitor da Bancada 01 foi vinculado ao Laboratorio de Informatica 01.",
     createdAt: "2026-01-15T10:06:00.000Z"
   },
   {
@@ -26,8 +26,8 @@ export const historySeed: HistoryItem[] = [
     type: EquipmentHistoryType.STATUS_CHANGED,
     equipmentId: EQUIPMENT_SEED_IDS.printer,
     toLocationId: LOCATION_SEED_IDS.maintenance,
-    title: "Status updated",
-    description: "HP Printer status changed from AVAILABLE to IN_MAINTENANCE.",
+    title: "Status atualizado",
+    description: "Impressora da Secretaria foi enviada para manutencao.",
     createdAt: "2026-01-15T10:11:00.000Z"
   },
   {
@@ -35,8 +35,8 @@ export const historySeed: HistoryItem[] = [
     type: EquipmentHistoryType.LINKED_TO_LOCATION,
     equipmentId: EQUIPMENT_SEED_IDS.router,
     toLocationId: LOCATION_SEED_IDS.network,
-    title: "Linked to location",
-    description: "Network Router was linked to Network Room.",
+    title: "Vinculado a localizacao",
+    description: "Roteador Principal do Lab foi vinculado a Sala de Redes.",
     createdAt: "2026-01-15T10:16:00.000Z"
   },
   {
@@ -44,8 +44,8 @@ export const historySeed: HistoryItem[] = [
     type: EquipmentHistoryType.LINKED_TO_LOCATION,
     equipmentId: EQUIPMENT_SEED_IDS.keyboard,
     toLocationId: LOCATION_SEED_IDS.storage,
-    title: "Linked to location",
-    description: "Keyboard Kit was linked to Storage.",
+    title: "Vinculado a localizacao",
+    description: "Kit Teclado e Mouse Reserva foi armazenado no almoxarifado.",
     createdAt: "2026-01-15T10:21:00.000Z"
   },
   {
@@ -53,8 +53,8 @@ export const historySeed: HistoryItem[] = [
     type: EquipmentHistoryType.STATUS_CHANGED,
     equipmentId: EQUIPMENT_SEED_IDS.projector,
     toLocationId: LOCATION_SEED_IDS.storage,
-    title: "Status updated",
-    description: "Projector status changed from AVAILABLE to INACTIVE.",
+    title: "Status atualizado",
+    description: "Projetor Reserva foi marcado como inativo para demonstracao.",
     createdAt: "2026-01-15T10:26:00.000Z"
   }
 ];

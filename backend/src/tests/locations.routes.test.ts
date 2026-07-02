@@ -42,7 +42,7 @@ describe("Locations routes", () => {
 
   it("does not allow duplicated location code", async () => {
     const response = await request(app).post("/api/v1/locations").send({
-      code: "LAB-01",
+      code: "LAB-INFO-01",
       name: "Duplicated Lab",
       type: "LABORATORY"
     });

@@ -58,7 +58,7 @@ Exemplo de resposta:
     "type": "Informática",
     "model": "Latitude 5420",
     "status": "Disponível",
-    "location": "Lab 01",
+    "location": "Laboratório de Informática 01",
     "lastUpdate": "24 Out 2023",
     "serialNumber": "DL-5420-2026"
   }
