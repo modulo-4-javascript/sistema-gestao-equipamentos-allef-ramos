@@ -82,7 +82,17 @@ async function seedLocations(): Promise<void> {
         id, code, name, type, building, floor, room, description, status, created_at, updated_at
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-      ON CONFLICT (id) DO NOTHING
+      ON CONFLICT (id) DO UPDATE
+      SET
+        code = EXCLUDED.code,
+        name = EXCLUDED.name,
+        type = EXCLUDED.type,
+        building = EXCLUDED.building,
+        floor = EXCLUDED.floor,
+        room = EXCLUDED.room,
+        description = EXCLUDED.description,
+        status = EXCLUDED.status,
+        updated_at = EXCLUDED.updated_at
       `,
       [
         location.id,
@@ -113,10 +123,17 @@ async function seedEquipment(): Promise<void> {
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       ON CONFLICT (id) DO UPDATE
-      SET responsible_user_name = COALESCE(
-        equipment.responsible_user_name,
-        EXCLUDED.responsible_user_name
-      )
+      SET
+        code = EXCLUDED.code,
+        name = EXCLUDED.name,
+        type = EXCLUDED.type,
+        model = EXCLUDED.model,
+        serial_number = EXCLUDED.serial_number,
+        status = EXCLUDED.status,
+        location_id = EXCLUDED.location_id,
+        responsible_user_name = EXCLUDED.responsible_user_name,
+        notes = EXCLUDED.notes,
+        updated_at = EXCLUDED.updated_at
       `,
       [
         equipment.id,
@@ -155,7 +172,16 @@ async function seedHistory(): Promise<void> {
         user_name, created_at
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      ON CONFLICT (id) DO NOTHING
+      ON CONFLICT (id) DO UPDATE
+      SET
+        type = EXCLUDED.type,
+        equipment_id = EXCLUDED.equipment_id,
+        from_location_id = EXCLUDED.from_location_id,
+        to_location_id = EXCLUDED.to_location_id,
+        title = EXCLUDED.title,
+        description = EXCLUDED.description,
+        user_name = EXCLUDED.user_name,
+        created_at = EXCLUDED.created_at
       `,
       [
         history.id,
