@@ -76,7 +76,7 @@ describe("Equipment routes", () => {
     expect(response.status).toBe(200);
     expect(response.body).toMatchObject({
       id: EQUIPMENT_SEED_IDS.notebook,
-      name: "Dell Notebook"
+      name: "Notebook do Professor"
     });
   });
 

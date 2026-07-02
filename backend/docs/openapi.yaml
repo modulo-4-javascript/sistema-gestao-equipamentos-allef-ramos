@@ -407,7 +407,6 @@ components:
       description: Texto usado para buscar por nome, código, modelo, prédio ou sala.
       schema:
         type: string
-        example: lab 01
     EquipmentStatusQuery:
       name: status
       in: query
@@ -563,7 +562,7 @@ components:
           example: EQP-001
         name:
           type: string
-          example: Dell Notebook
+          example: Notebook do Professor
         type:
           $ref: '#/components/schemas/EquipmentType'
         model:
@@ -616,7 +615,7 @@ components:
           type: string
           minLength: 2
           maxLength: 120
-          example: Dell Notebook
+          example: Notebook do Professor
         type:
           $ref: '#/components/schemas/EquipmentType'
         model:
@@ -670,10 +669,10 @@ components:
           format: uuid
         code:
           type: string
-          example: LAB-01
+          example: LAB-INFO-01
         name:
           type: string
-          example: Lab 01
+          example: Laboratorio de Informatica 01
         type:
           $ref: '#/components/schemas/LocationType'
         building:
@@ -726,7 +725,7 @@ components:
           type: string
           minLength: 2
           maxLength: 120
-          example: Lab 01
+          example: Laboratorio de Informatica 01
         type:
           $ref: '#/components/schemas/LocationType'
         code:
@@ -734,7 +733,7 @@ components:
           minLength: 2
           maxLength: 20
           pattern: ^[A-Z0-9-]+$
-          example: LAB-01
+          example: LAB-INFO-01
         building:
           type: string
           maxLength: 120
@@ -788,7 +787,7 @@ components:
           example: Status updated
         description:
           type: string
-          example: Changed from IN_MAINTENANCE to AVAILABLE.
+          example: Impressora da Secretaria foi enviada para manutencao.
         createdAt:
           type: string
           format: date-time
@@ -816,7 +815,7 @@ components:
           nullable: true
         description:
           type: string
-          example: Equipment moved from Storage to Lab 01.
+          example: Equipamento movido do Almoxarifado para Laboratorio de Informatica 01.
         createdAt:
           type: string
           format: date-time
