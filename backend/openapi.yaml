@@ -669,10 +669,10 @@ components:
           format: uuid
         code:
           type: string
-          example: LAB-INFO-01
+          example: LAB-1
         name:
           type: string
-          example: Laboratorio de Informatica 01
+          example: Lab Info 1
         type:
           $ref: '#/components/schemas/LocationType'
         building:
@@ -725,7 +725,7 @@ components:
           type: string
           minLength: 2
           maxLength: 120
-          example: Laboratorio de Informatica 01
+          example: Lab Info 1
         type:
           $ref: '#/components/schemas/LocationType'
         code:
@@ -733,7 +733,7 @@ components:
           minLength: 2
           maxLength: 20
           pattern: ^[A-Z0-9-]+$
-          example: LAB-INFO-01
+          example: LAB-1
         building:
           type: string
           maxLength: 120
@@ -815,7 +815,7 @@ components:
           nullable: true
         description:
           type: string
-          example: Equipamento movido do Almoxarifado para Laboratorio de Informatica 01.
+          example: Equipamento movido do Almoxarifado para Lab Info 1.
         createdAt:
           type: string
           format: date-time
