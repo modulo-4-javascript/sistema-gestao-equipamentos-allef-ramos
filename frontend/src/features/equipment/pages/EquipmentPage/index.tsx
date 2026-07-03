@@ -133,12 +133,12 @@ export function EquipmentPage() {
 
   // Debounce simples: a API só recebe a busca depois que o usuário para de digitar.
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setDebouncedSearchText(searchText)
       setCurrentPage(1)
     }, 400)
 
-    return () => window.clearTimeout(timeoutId)
+    return () => clearTimeout(timeoutId)
   }, [searchText])
 
   // Estes parâmetros vão para a API. Quando algum muda, a listagem é buscada de novo.
