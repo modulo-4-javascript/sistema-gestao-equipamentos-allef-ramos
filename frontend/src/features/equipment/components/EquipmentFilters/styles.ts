@@ -11,11 +11,20 @@ export const FilterCard = styled(Card)`
 
 export const FiltersGrid = styled.div`
   display: grid;
-  grid-template-columns: minmax(260px, 1.35fr) minmax(180px, 1fr) minmax(180px, 1fr) auto;
+  grid-template-columns: minmax(220px, 1.4fr) minmax(160px, 0.8fr) minmax(170px, 0.9fr) minmax(
+      140px,
+      auto
+    );
   gap: 16px;
   align-items: end;
 
-  @media (max-width: 1100px) {
+  > .ant-btn {
+    width: 100%;
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 1280px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -26,6 +35,7 @@ export const FiltersGrid = styled.div`
 
 export const Field = styled.label`
   display: block;
+  min-width: 0;
 `
 
 export const FieldLabel = styled.span`

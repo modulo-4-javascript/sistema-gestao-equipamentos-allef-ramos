@@ -306,15 +306,36 @@ const locationOptionsQuery = useEquipmentLocationOptions()
 Confira os estados da paginação:
 
 ```ts
+const [searchText, setSearchText] = useState('')
+const [debouncedSearchText, setDebouncedSearchText] = useState('')
 const [currentPage, setCurrentPage] = useState(1)
 const [pageSize, setPageSize] = useState(10)
 ```
+
+Confira o debounce da busca:
+
+```ts
+useEffect(() => {
+  const timeoutId = window.setTimeout(() => {
+    setDebouncedSearchText(searchText)
+    setCurrentPage(1)
+  }, 400)
+
+  return () => window.clearTimeout(timeoutId)
+}, [searchText])
+```
+
+O que entender:
+
+- `searchText` muda a cada tecla;
+- `debouncedSearchText` muda só depois de 400ms sem digitar;
+- a API usa `debouncedSearchText`, então não busca a cada tecla.
 
 Confira os parâmetros enviados para a API:
 
 ```ts
 const listParams = {
-  search: searchText,
+  search: debouncedSearchText,
   status: selectedStatus,
   type: selectedType,
   page: currentPage,

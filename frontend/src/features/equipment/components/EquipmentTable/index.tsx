@@ -183,7 +183,10 @@ export function EquipmentTable({
         pagination={pagination}
         // rowKey informa qual campo identifica cada linha de forma única.
         rowKey="id"
-        scroll={{ x: 980 }}
+        size="middle"
+        tableLayout="fixed"
+        // Scroll responsivo: horizontal para telas menores e vertical conforme a altura da janela.
+        scroll={{ x: 'max-content', y: 'clamp(280px, 42vh, 520px)' }}
       />
     </TableCard>
   )
