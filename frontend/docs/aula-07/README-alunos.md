@@ -316,12 +316,12 @@ Confira o debounce da busca:
 
 ```ts
 useEffect(() => {
-  const timeoutId = window.setTimeout(() => {
+  const timeoutId = setTimeout(() => {
     setDebouncedSearchText(searchText)
     setCurrentPage(1)
   }, 400)
 
-  return () => window.clearTimeout(timeoutId)
+  return () => clearTimeout(timeoutId)
 }, [searchText])
 ```
 
