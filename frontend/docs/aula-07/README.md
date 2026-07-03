@@ -212,7 +212,7 @@ frontend/src/features/equipment/hooks/useEquipmentQueries.ts
 
 Aqui ficam os `useQuery` e `useMutation`.
 
-Eles controlam loading, erro, cache e atualização da tela depois de criar, editar ou alterar status.
+Eles controlam loading, erro, cache básico e atualização da tela depois de criar, editar ou alterar status.
 
 ### Types
 
