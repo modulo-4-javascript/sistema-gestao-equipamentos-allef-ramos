@@ -101,8 +101,8 @@ export const locationTypeOptions: LocationType[] = [
 ]
 
 const locationStatusLabels: Record<LocationStatus, string> = {
-  ACTIVE: 'Ativa',
-  INACTIVE: 'Inativa',
+  ACTIVE: 'Ativo',
+  INACTIVE: 'Inativo',
 }
 
 const locationTypeLabels: Record<LocationType, string> = {
@@ -129,6 +129,5 @@ export function formatLocationDate(value?: string) {
 
   return new Intl.DateTimeFormat('pt-BR', {
     dateStyle: 'short',
-    timeStyle: 'short',
   }).format(new Date(value))
 }

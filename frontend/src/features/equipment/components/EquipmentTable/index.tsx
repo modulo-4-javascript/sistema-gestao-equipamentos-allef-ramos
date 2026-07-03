@@ -4,22 +4,22 @@ import DeleteOutlineOutlined from '@mui/icons-material/DeleteOutlineOutlined'
 import EditOutlined from '@mui/icons-material/EditOutlined'
 import MoreHorizOutlined from '@mui/icons-material/MoreHorizOutlined'
 import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined'
-import { Dropdown, Table } from 'antd'
+import { Dropdown } from 'antd'
 import type { TableProps } from 'antd'
+import { DataTable } from '../../../../shared/components/DataTable'
+import {
+  ActionButton,
+  ResourceCell,
+  ResourceCode,
+  ResourceIcon,
+  ResourceName,
+} from '../../../../shared/components/DataTable/styles'
 import {
   formatEquipmentDate,
   getEquipmentTypeLabel,
   type Equipment,
 } from '../../types/equipment'
 import { StatusBadge } from '../StatusBadge'
-import {
-  ActionButton,
-  EquipmentCell,
-  EquipmentCode,
-  EquipmentIcon,
-  EquipmentName,
-  TableCard,
-} from './styles'
 
 interface EquipmentTableProps {
   equipments: Equipment[]
@@ -52,15 +52,15 @@ function getColumns({
       key: 'name',
       render: (_, equipment) => (
         // Render customizado: em vez de mostrar só texto, criamos ícone + nome + ID.
-        <EquipmentCell>
-          <EquipmentIcon>
+        <ResourceCell>
+          <ResourceIcon>
             <ComputerOutlined fontSize="small" />
-          </EquipmentIcon>
+          </ResourceIcon>
           <span>
-            <EquipmentName>{equipment.name}</EquipmentName>
-            <EquipmentCode>{equipment.code}</EquipmentCode>
+            <ResourceName>{equipment.name}</ResourceName>
+            <ResourceCode>{equipment.code}</ResourceCode>
           </span>
-        </EquipmentCell>
+        </ResourceCell>
       ),
     },
     {
@@ -168,26 +168,18 @@ export function EquipmentTable({
   onViewEquipment,
 }: EquipmentTableProps) {
   return (
-    <TableCard styles={{ body: { padding: 0 } }}>
-      {/* Este componente foi separado para reaproveitarmos em outras telas */}
-      <Table
-        columns={getColumns({
-          onChangeStatusEquipment,
-          onEditEquipment,
-          onRemoveEquipment,
-          onViewEquipment,
-        })}
-        dataSource={equipments}
-        loading={loading}
-        locale={{ emptyText: 'Nenhum equipamento encontrado.' }}
-        pagination={pagination}
-        // rowKey informa qual campo identifica cada linha de forma única.
-        rowKey="id"
-        size="middle"
-        tableLayout="fixed"
-        // Scroll responsivo: horizontal para telas menores e vertical conforme a altura da janela.
-        scroll={{ x: 'max-content', y: 'clamp(280px, 42vh, 520px)' }}
-      />
-    </TableCard>
+    <DataTable
+      columns={getColumns({
+        onChangeStatusEquipment,
+        onEditEquipment,
+        onRemoveEquipment,
+        onViewEquipment,
+      })}
+      dataSource={equipments}
+      emptyText="Nenhum equipamento encontrado."
+      loading={loading}
+      pagination={pagination}
+      rowKey="id"
+    />
   )
 }

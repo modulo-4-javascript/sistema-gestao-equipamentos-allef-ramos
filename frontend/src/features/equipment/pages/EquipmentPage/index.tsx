@@ -2,7 +2,9 @@ import { Alert, App as AntDesignApp, Empty } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppLayout } from '../../../../app/layout/AppLayout'
-import { EquipmentFilters } from '../../components/EquipmentFilters'
+import { PageHeader } from '../../../../shared/components/PageHeader'
+import { ResourceFilters } from '../../../../shared/components/ResourceFilters'
+import { SummaryCards } from '../../../../shared/components/SummaryCards'
 import { EquipmentFormModal } from '../../components/EquipmentFormModal'
 import type {
   EquipmentFormMode,
@@ -12,8 +14,6 @@ import { EquipmentRemoveModal } from '../../components/EquipmentRemoveModal'
 import { EquipmentStatusModal } from '../../components/EquipmentStatusModal'
 import type { EquipmentStatusFormValues } from '../../components/EquipmentStatusModal'
 import { EquipmentTable } from '../../components/EquipmentTable'
-import { PageHeader } from '../../components/PageHeader'
-import { SummaryCards } from '../../components/SummaryCards'
 import { getRequestErrorMessage } from '../../../../shared/http/getRequestErrorMessage'
 import { useCreateEquipment } from '../../hooks/useCreateEquipment'
 import { useEquipmentList } from '../../hooks/useEquipmentList'
@@ -22,6 +22,8 @@ import { useEquipmentSummary } from '../../hooks/useEquipmentSummary'
 import { useUpdateEquipment } from '../../hooks/useUpdateEquipment'
 import { useUpdateEquipmentStatus } from '../../hooks/useUpdateEquipmentStatus'
 import {
+  getEquipmentStatusLabel,
+  getEquipmentTypeLabel,
   statusOptions,
   typeOptions,
   type CreateEquipmentPayload,
@@ -293,22 +295,31 @@ export function EquipmentPage() {
     <AppLayout currentPage="Equipamentos">
       <Container>
         {/* Cabeçalho da página e botão para abrir o cadastro. */}
-        <PageHeader onCreateEquipment={handleCreateEquipment} />
+        <PageHeader
+          actionLabel="Novo equipamento"
+          description="Gerencie os equipamentos cadastrados no laboratório."
+          title="Equipamentos"
+          onAction={handleCreateEquipment}
+        />
 
         {/* Cards com totais vindos de GET /equipment/summary. */}
-        <SummaryCards summaries={summaryCards} />
+        <SummaryCards ariaLabel="Resumo dos equipamentos" summaries={summaryCards} />
 
         {/* Filtros controlados pela página. Cada alteração refaz a busca da lista. */}
-        <EquipmentFilters
+        <ResourceFilters
+          getStatusLabel={getEquipmentStatusLabel}
+          getTypeLabel={getEquipmentTypeLabel}
+          searchPlaceholder="Nome, modelo ou ID..."
           searchText={searchText}
           selectedStatus={selectedStatus}
           selectedType={selectedType}
           statusOptions={statusOptions}
+          typePlaceholder="Selecione um tipo..."
           typeOptions={typeOptions}
-          onSearchChange={handleSearchChange}
-          onStatusChange={handleStatusChange}
-          onTypeChange={handleTypeChange}
           onClear={handleClearFilters}
+          onStatusChange={handleStatusChange}
+          onSearchChange={handleSearchChange}
+          onTypeChange={handleTypeChange}
         />
 
         {/* Erros de carregamento aparecem acima da tabela. */}

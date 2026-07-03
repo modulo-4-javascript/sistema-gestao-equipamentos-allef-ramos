@@ -25,13 +25,13 @@ export const TableCard = styled(Card)`
   }
 `
 
-export const EquipmentCell = styled.div`
+export const ResourceCell = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
 `
 
-export const EquipmentIcon = styled.span`
+export const ResourceIcon = styled.span`
   display: inline-flex;
   width: 32px;
   height: 32px;
@@ -43,15 +43,18 @@ export const EquipmentIcon = styled.span`
   border-radius: 8px;
 `
 
-export const EquipmentName = styled.strong`
+export const ResourceName = styled.strong`
   display: block;
+  overflow: hidden;
   color: #111827;
   font-size: 14px;
   font-weight: 700;
   line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `
 
-export const EquipmentCode = styled.small`
+export const ResourceCode = styled.small`
   display: block;
   color: #6b7280;
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;

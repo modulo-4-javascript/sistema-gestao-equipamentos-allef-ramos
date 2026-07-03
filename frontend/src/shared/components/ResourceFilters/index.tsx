@@ -1,63 +1,67 @@
 import SearchOutlined from '@mui/icons-material/SearchOutlined'
 import { Button, Input, Select } from 'antd'
-import {
-  getEquipmentStatusLabel,
-  getEquipmentTypeLabel,
-  type EquipmentStatus,
-  type EquipmentType,
-} from '../../types/equipment'
 import { Field, FieldLabel, FilterCard, FiltersGrid } from './styles'
 
-interface EquipmentFiltersProps {
-  // Estes valores vêm da página principal.
-  // Assim, a página continua sendo dona dos filtros.
+interface ResourceFiltersProps<StatusValue extends string, TypeValue extends string> {
   searchText: string
-  selectedStatus?: EquipmentStatus
-  selectedType?: EquipmentType
-  statusOptions: EquipmentStatus[]
-  typeOptions: EquipmentType[]
+  selectedStatus?: StatusValue
+  selectedType?: TypeValue
+  statusOptions: StatusValue[]
+  typeOptions: TypeValue[]
+  getStatusLabel: (status: StatusValue) => string
+  getTypeLabel: (type: TypeValue) => string
+  searchLabel?: string
+  searchPlaceholder: string
+  statusLabel?: string
+  typeLabel?: string
+  typePlaceholder: string
   onSearchChange: (value: string) => void
-  onStatusChange: (value?: EquipmentStatus) => void
-  onTypeChange: (value?: EquipmentType) => void
+  onStatusChange: (value?: StatusValue) => void
+  onTypeChange: (value?: TypeValue) => void
   onClear: () => void
 }
 
-export function EquipmentFilters({
+export function ResourceFilters<StatusValue extends string, TypeValue extends string>({
   searchText,
   selectedStatus,
   selectedType,
   statusOptions,
   typeOptions,
+  getStatusLabel,
+  getTypeLabel,
+  searchLabel = 'Busca',
+  searchPlaceholder,
+  statusLabel = 'Status',
+  typeLabel = 'Tipo',
+  typePlaceholder,
   onSearchChange,
   onStatusChange,
   onTypeChange,
   onClear,
-}: EquipmentFiltersProps) {
+}: ResourceFiltersProps<StatusValue, TypeValue>) {
   return (
     <FilterCard styles={{ body: { padding: 24 } }}>
       <FiltersGrid>
         <Field>
-          <FieldLabel>Busca</FieldLabel>
+          <FieldLabel>{searchLabel}</FieldLabel>
           <Input
             allowClear
             prefix={<SearchOutlined fontSize="small" />}
-            placeholder="Nome, modelo ou ID..."
+            placeholder={searchPlaceholder}
             value={searchText}
-            // A cada digitação, avisamos a página para atualizar o estado da busca.
             onChange={(event) => onSearchChange(event.target.value)}
           />
         </Field>
 
         <Field>
-          <FieldLabel>Status</FieldLabel>
+          <FieldLabel>{statusLabel}</FieldLabel>
           <Select
             allowClear
             placeholder="Todos"
             value={selectedStatus}
-            // O Select chama esta função quando o usuário escolhe ou limpa um status.
-            onChange={(value?: EquipmentStatus) => onStatusChange(value)}
+            onChange={(value?: StatusValue) => onStatusChange(value)}
             options={statusOptions.map((status) => ({
-              label: getEquipmentStatusLabel(status),
+              label: getStatusLabel(status),
               value: status,
             }))}
             style={{ width: '100%' }}
@@ -65,15 +69,14 @@ export function EquipmentFilters({
         </Field>
 
         <Field>
-          <FieldLabel>Tipo</FieldLabel>
+          <FieldLabel>{typeLabel}</FieldLabel>
           <Select
             allowClear
-            placeholder="Selecione um tipo..."
+            placeholder={typePlaceholder}
             value={selectedType}
-            // O tipo também fica salvo na página principal.
-            onChange={(value?: EquipmentType) => onTypeChange(value)}
+            onChange={(value?: TypeValue) => onTypeChange(value)}
             options={typeOptions.map((type) => ({
-              label: getEquipmentTypeLabel(type),
+              label: getTypeLabel(type),
               value: type,
             }))}
             style={{ width: '100%' }}

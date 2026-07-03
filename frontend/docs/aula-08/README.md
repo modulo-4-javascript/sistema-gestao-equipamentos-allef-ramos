@@ -11,13 +11,13 @@ Já está pronto:
 - `frontend/src/services/api.ts` com `axiosApi`;
 - Equipamentos integrado com a API;
 - utilitários compartilhados em `frontend/src/shared`;
+- componentes compartilhados `SummaryCards`, `ResourceFilters` e `DataTable`;
 - `locationService` completo com as rotas da API;
 - `useLocationList` e `useLocationSummary`;
-- página `/locations` com resumo e tabela inicial.
+- página `/locations` com resumo, filtros e tabela usando dados reais.
 
 Falta os alunos implementarem:
 
-- filtros de localizações;
 - detalhe de localização;
 - formulário de criação;
 - formulário de edição;
@@ -59,37 +59,46 @@ flowchart LR
 2. Abrir `types/location.ts`.
 3. Conferir `locationService.ts`.
 4. Criar hooks que faltam.
-5. Criar filtros.
-6. Criar tabela com ações.
+5. Conferir filtros, cards e tabela compartilhados.
+6. Adicionar ações na tabela.
 7. Criar modal de formulário.
 8. Criar modal de status.
 9. Criar tela de detalhes.
 10. Integrar exclusão.
 
-## Reaproveitamento visual
+## Reaproveitamento visual já iniciado
 
-Recomendação para a aula: copiar primeiro, depois extrair para `shared` quando a repetição ficar clara.
+Nesta branch, os componentes repetidos mais óbvios já foram movidos para `shared`:
+
+```txt
+frontend/src/shared/components/SummaryCards
+frontend/src/shared/components/ResourceFilters
+frontend/src/shared/components/DataTable
+frontend/src/shared/components/PageHeader
+```
+
+Eles já são usados por Equipamentos e Localizações.
+
+Recomendação para a continuação da aula: copiar primeiro, depois extrair para `shared` quando a repetição ficar clara.
 
 Pode copiar de Equipamentos:
 
-- `EquipmentFilters` para criar `LocationFilters`;
-- `EquipmentTable` para criar `LocationTable`;
 - `EquipmentFormModal` para criar `LocationFormModal`;
 - `EquipmentStatusModal` para criar `LocationStatusModal`;
 - `EquipmentRemoveModal` para criar `LocationRemoveModal`;
 - `DetailsHeader` para criar um cabeçalho de detalhe;
 - `DetailSummaryCards` para os cards do detalhe.
 
-Bons candidatos para `shared`:
+Bons próximos candidatos para `shared`:
 
-- `PageHeader`, se receber `title`, `description`, `buttonLabel` e `onCreate`;
-- `SummaryCards`, se o tipo de card ficar genérico;
-- estilos de tabela, como `TableCard`, célula com ícone e botão de ações;
 - modal de confirmação de exclusão;
-- `getRequestErrorMessage`;
-- `RequestState`.
+- badge de status, se a variação por módulo for pequena;
+- cabeçalho de detalhes.
 
-Nesta branch, `getRequestErrorMessage` e `RequestState` já foram movidos para `shared`.
+O `PageHeader` já ficou compartilhado e recebe `title`, `description`,
+`actionLabel` e `onAction`.
+
+Nesta branch, `getRequestErrorMessage` e `RequestState` também já foram movidos para `shared`.
 
 ## Critérios de aceite
 

@@ -2,17 +2,34 @@ import BlockOutlined from '@mui/icons-material/BlockOutlined'
 import BuildOutlined from '@mui/icons-material/BuildOutlined'
 import CheckCircleOutlineOutlined from '@mui/icons-material/CheckCircleOutlineOutlined'
 import Inventory2Outlined from '@mui/icons-material/Inventory2Outlined'
-import type { EquipmentSummary, SummaryIconName } from '../../types/equipment'
+import PinDropOutlined from '@mui/icons-material/PinDropOutlined'
 import { CardContent, CardHeader, Grid, IconBox, Label, SummaryCard, Value } from './styles'
 
+export type SummaryIconName =
+  | 'total'
+  | 'available'
+  | 'maintenance'
+  | 'inactive'
+  | 'active'
+  | 'location'
+  | 'equipment'
+
+export interface SummaryCardItem {
+  id: string
+  title: string
+  value: number
+  icon: SummaryIconName
+  lineColor: string
+  iconBackground: string
+}
+
 interface SummaryCardsProps {
-  // A lista de cards vem por props para o componente não depender da origem dos dados.
-  summaries: EquipmentSummary[]
+  ariaLabel: string
+  summaries: SummaryCardItem[]
 }
 
 function renderSummaryIcon(icon: SummaryIconName) {
-  // Esta função simples troca o ícone de acordo com o tipo de card.
-  if (icon === 'available') {
+  if (icon === 'available' || icon === 'active') {
     return <CheckCircleOutlineOutlined fontSize="small" />
   }
 
@@ -24,13 +41,16 @@ function renderSummaryIcon(icon: SummaryIconName) {
     return <BlockOutlined fontSize="small" />
   }
 
+  if (icon === 'location') {
+    return <PinDropOutlined fontSize="small" />
+  }
+
   return <Inventory2Outlined fontSize="small" />
 }
 
-export function SummaryCards({ summaries }: SummaryCardsProps) {
+export function SummaryCards({ ariaLabel, summaries }: SummaryCardsProps) {
   return (
-    <Grid aria-label="Resumo dos equipamentos">
-      {/* O map transforma cada item do resumo em um card na tela. */}
+    <Grid aria-label={ariaLabel}>
       {summaries.map((summary) => (
         <SummaryCard
           key={summary.id}

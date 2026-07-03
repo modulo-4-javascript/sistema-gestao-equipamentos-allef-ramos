@@ -2,7 +2,7 @@
 
 Nesta aula você vai construir o módulo de Localizações usando Equipamentos como referência.
 
-Equipamentos já está pronto e integrado com a API. Localizações já começa com uma base: listagem, resumo, types, service completo e dois hooks.
+Equipamentos já está pronto e integrado com a API. Localizações já começa com uma base: listagem, resumo, filtros, tabela, types, service completo e dois hooks.
 
 ## Mapa da implementação
 
@@ -112,28 +112,34 @@ import type { RequestState } from '../../../shared/hooks/requestState'
 import { getRequestErrorMessage } from '../../../shared/http/getRequestErrorMessage'
 ```
 
-## Passo 4 - Criar filtros
+## Passo 4 - Conferir filtros, cards e tabela
 
-Copie a ideia de:
-
-```txt
-frontend/src/features/equipment/components/EquipmentFilters
-```
-
-Crie:
+Localizações já usa os mesmos componentes compartilhados de Equipamentos:
 
 ```txt
-frontend/src/features/locations/components/LocationFilters
+frontend/src/shared/components/SummaryCards
+frontend/src/shared/components/ResourceFilters
+frontend/src/shared/components/DataTable
+frontend/src/shared/components/PageHeader
 ```
 
-Campos esperados:
+Na página:
 
+```txt
+frontend/src/features/locations/pages/LocationsPage/index.tsx
+```
+
+Confira:
+
+- cards de resumo;
 - busca;
 - status;
 - tipo;
 - limpar filtros.
+- tabela com paginação.
+- cabeçalho com botão "Novo local".
 
-Use:
+Os filtros usam:
 
 ```ts
 locationStatusOptions
@@ -142,35 +148,25 @@ getLocationStatusLabel
 getLocationTypeLabel
 ```
 
-## Passo 5 - Melhorar a tabela
+## Passo 5 - Entender as ações da tabela
 
-A página já tem uma tabela inicial.
+A tabela já está pronta com dados reais e uma coluna de ações visual.
 
-Agora transforme essa tabela em componente:
+Ela usa a mesma ideia de:
 
 ```txt
-frontend/src/features/locations/components/LocationTable
+frontend/src/features/equipment/components/EquipmentTable
 ```
 
-Use `EquipmentTable` como referência.
-
-Colunas sugeridas:
-
-- localização;
-- tipo;
-- status;
-- prédio;
-- sala;
-- equipamentos;
-- atualização;
-- ações.
-
-Ações sugeridas:
+Ações que aparecem:
 
 - visualizar;
 - editar;
 - alterar status;
 - excluir.
+
+Por enquanto essas ações mostram mensagens. Na aula, troque cada mensagem pelo modal
+ou pela chamada de API correspondente.
 
 ## Passo 6 - Criar formulário
 
@@ -295,13 +291,18 @@ Na tela de detalhe, mostre:
 Pode mover para `shared` quando fizer sentido:
 
 - cabeçalho de página;
-- card de resumo;
-- card/tabela com borda;
 - modal de confirmação;
 - badge de status;
 - helpers de erro e estado de request.
 
-Regra simples: copie primeiro para aprender; extraia para `shared` quando a repetição estiver clara.
+Já foram movidos para `shared`:
+
+- card de resumo;
+- filtros;
+- tabela;
+- helpers de erro e estado de request.
+
+Regra simples para os próximos: copie primeiro para aprender; extraia para `shared` quando a repetição estiver clara.
 
 ## Checklist final
 
