@@ -176,6 +176,20 @@ GET /api/v1/equipment
 
 Esse `GET` pede a lista de equipamentos. A API responde com JSON, o hook guarda a resposta em estado React e a tela renderiza a tabela.
 
+## Vocabulário para explicar em sala
+
+Função assíncrona:
+
+- `async` permite usar `await`;
+- `await` espera a resposta da API antes de continuar;
+- a aplicação não fica travada enquanto espera.
+
+Instância:
+
+- uma instância é uma versão configurada de uma ferramenta;
+- `axiosApi` é uma instância do Axios;
+- ela já sabe a URL base da API, então os services ficam mais curtos.
+
 ## Camadas usadas na integração
 
 ### Service
@@ -287,11 +301,6 @@ Passos:
 8. se der erro, aparece uma mensagem simples;
 9. se a lista vier vazia, aparece o estado vazio.
 
-TODO para evoluir depois:
-
-- buscar apenas quando o aluno clicar em pesquisar;
-- criar um componente próprio para o rodapé da paginação.
-
 ## Integração do detalhe
 
 Arquivo:
@@ -368,12 +377,6 @@ Você não deve copiar e colar sem entender. Use Equipamentos como referência d
 
 ```txt
 types -> service -> page -> components -> loading/erro/vazio
-```
-
-Leia também:
-
-```txt
-docs/aula-07/projeto-final-localizacoes.md
 ```
 
 ## Atividade prática para entrega
