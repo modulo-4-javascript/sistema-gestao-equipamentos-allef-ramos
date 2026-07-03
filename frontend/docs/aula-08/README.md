@@ -1,30 +1,124 @@
-# Aula 08 - Módulo de Localizações
+# Aula 08 - Trabalho final de casa: módulo de Localizações
 
-Nesta aula, Equipamentos já está integrado com a API.
+Nesta branch, Equipamentos já está integrado com a API. O trabalho final de casa
+é completar Localizações por conta própria, usando Equipamentos como referência.
 
-O objetivo é implementar Localizações seguindo o mesmo padrão usado em Equipamentos: types, service, hooks, página, componentes, estados de loading, erro, lista vazia e atualização após salvar.
+Este material precisa funcionar sem acompanhamento em sala. A branch deixa a
+base visual e as partes mais difíceis semiprontas em comentários, para os alunos
+terem um mapa durante o fim de semana, mas ainda precisarem implementar os
+hooks, modais e fluxos.
 
-## Estado inicial da branch
+## Estado inicial
 
 Já está pronto:
 
 - `frontend/src/services/api.ts` com `axiosApi`;
 - Equipamentos integrado com a API;
 - utilitários compartilhados em `frontend/src/shared`;
-- componentes compartilhados `SummaryCards`, `ResourceFilters` e `DataTable`;
+- componentes compartilhados `PageHeader`, `SummaryCards`, `ResourceFilters` e `DataTable`;
 - `locationService` completo com as rotas da API;
 - `useLocationList` e `useLocationSummary`;
-- página `/locations` com resumo, filtros e tabela usando dados reais.
+- página `/locations` renderizando só o cabeçalho;
+- blocos comentados em `LocationsPage` para cards, filtros, tabela, ações e modais.
 
 Falta os alunos implementarem:
 
-- detalhe de localização;
+- hooks de escrita e detalhe;
+- ativação da listagem visual comentada;
+- filtros e paginação na tela;
+- tabela com menu de ações;
 - formulário de criação;
 - formulário de edição;
-- alteração de status;
-- exclusão;
-- equipamentos vinculados à localização;
-- histórico de movimentações da localização.
+- modal de alteração de situação;
+- modal de exclusão;
+- navegação para detalhe;
+- tela de detalhe;
+- equipamentos vinculados;
+- histórico de movimentações.
+
+## Arquitetura do Trabalho
+
+```mermaid
+flowchart TB
+  Equipment["Feature Equipamentos pronta"] --> Pattern["Padrão para repetir"]
+  Pattern --> Types["types/location.ts"]
+  Pattern --> Service["locationService"]
+  Pattern --> Hooks["hooks de Localizações"]
+  Pattern --> Components["modais e componentes"]
+  Pattern --> Page["LocationsPage"]
+
+  Service --> API["API /api/v1/locations"]
+  Hooks --> Service
+  Page --> Hooks
+  Page --> Components
+```
+
+## Fluxo de comunicação
+
+```mermaid
+sequenceDiagram
+  participant User as Aluno/Usuario
+  participant Page as LocationsPage
+  participant Hook as Hook de Locations
+  participant Service as locationService
+  participant API as Backend
+
+  User->>Page: filtra, pagina ou salva
+  Page->>Hook: chama load/create/update/delete
+  Hook->>Service: chama função do service
+  Service->>API: request com axiosApi
+  API-->>Service: resposta
+  Service-->>Hook: data
+  Hook-->>Page: loading, erro e dados
+  Page-->>User: atualiza tela
+```
+
+## Ordem recomendada
+
+1. Revisar a feature de Equipamentos funcionando.
+2. Ler `frontend/docs/aula-08/README-alunos.md`.
+3. Entender `types/location.ts` e `locationService.ts`.
+4. Conferir os blocos comentados de `LocationsPage`.
+5. Ativar cards, filtros e tabela usando os blocos 1 a 5.
+6. Criar os hooks que faltam.
+7. Criar os modais de formulário, situação e exclusão.
+8. Substituir mensagens temporárias por ações reais.
+9. Criar a rota e a página de detalhe.
+10. Validar loading, erro, estado vazio e reload depois de salvar.
+
+## Organização para o Fim de Semana
+
+Oriente os alunos a não tentar resolver tudo de uma vez. A sequência de entrega
+mais saudável é:
+
+1. deixar `/locations` listando dados reais;
+2. fazer criação e edição;
+3. fazer alteração de situação;
+4. fazer exclusão com tratamento de erro;
+5. fazer detalhe, equipamentos vinculados e histórico;
+6. rodar lint/build e conferir o checklist.
+
+Cada etapa deve ser testada no navegador antes de seguir para a próxima.
+
+## Blocos semiprontos
+
+O arquivo abaixo começa renderizando apenas o `PageHeader`. O restante fica em
+blocos comentados:
+
+```txt
+frontend/src/features/locations/pages/LocationsPage/index.tsx
+```
+
+Use os blocos nesta ordem:
+
+1. imports;
+2. helpers dos cards/endereço;
+3. colunas da tabela;
+4. estados, hooks e handlers;
+5. JSX dos elementos visuais;
+6. modais de criar, editar e excluir.
+
+A ordem mais segura é ativar um bloco por vez e testar antes de seguir.
 
 ## Rotas da API
 
@@ -40,73 +134,34 @@ GET    /api/v1/locations/:locationId/equipment
 GET    /api/v1/locations/:locationId/equipment-history
 ```
 
-## Fluxo visual
+## Reaproveitamento visual
 
-```mermaid
-flowchart LR
-  Equipment["Equipamentos pronto"] --> Pattern["Padrão da integração"]
-  Pattern --> Types["types/location.ts"]
-  Pattern --> Service["locationService"]
-  Pattern --> Hooks["hooks de locations"]
-  Pattern --> Page["LocationsPage"]
-  Pattern --> Components["componentes visuais"]
-  Service --> API["/api/v1/locations"]
-```
-
-## Ordem sugerida
-
-1. Revisar Equipamentos funcionando com API.
-2. Abrir `types/location.ts`.
-3. Conferir `locationService.ts`.
-4. Criar hooks que faltam.
-5. Conferir filtros, cards e tabela compartilhados.
-6. Adicionar ações na tabela.
-7. Criar modal de formulário.
-8. Criar modal de status.
-9. Criar tela de detalhes.
-10. Integrar exclusão.
-
-## Reaproveitamento visual já iniciado
-
-Nesta branch, os componentes repetidos mais óbvios já foram movidos para `shared`:
+Já estão em `shared`:
 
 ```txt
+frontend/src/shared/components/PageHeader
 frontend/src/shared/components/SummaryCards
 frontend/src/shared/components/ResourceFilters
 frontend/src/shared/components/DataTable
-frontend/src/shared/components/PageHeader
 ```
 
-Eles já são usados por Equipamentos e Localizações.
+Podem ser copiados de Equipamentos para Localizações:
 
-Recomendação para a continuação da aula: copiar primeiro, depois extrair para `shared` quando a repetição ficar clara.
-
-Pode copiar de Equipamentos:
-
-- `EquipmentFormModal` para criar `LocationFormModal`;
-- `EquipmentStatusModal` para criar `LocationStatusModal`;
-- `EquipmentRemoveModal` para criar `LocationRemoveModal`;
-- `DetailsHeader` para criar um cabeçalho de detalhe;
-- `DetailSummaryCards` para os cards do detalhe.
-
-Bons próximos candidatos para `shared`:
-
-- modal de confirmação de exclusão;
-- badge de status, se a variação por módulo for pequena;
-- cabeçalho de detalhes.
-
-O `PageHeader` já ficou compartilhado e recebe `title`, `description`,
-`actionLabel` e `onAction`.
-
-Nesta branch, `getRequestErrorMessage` e `RequestState` também já foram movidos para `shared`.
+- `EquipmentFormModal` -> `LocationFormModal`;
+- `EquipmentStatusModal` -> `LocationStatusModal`;
+- `EquipmentRemoveModal` -> `LocationRemoveModal`;
+- `DetailsHeader` -> cabeçalho de detalhe de localização;
+- `DetailSummaryCards` -> cards do detalhe.
 
 ## Critérios de aceite
 
 - Equipamentos continua funcionando com API.
 - Localizações lista dados reais.
-- Localizações cria e edita registros.
-- Localizações altera status.
-- Localizações remove registros sem equipamentos vinculados.
-- Localizações mostra erro quando a API bloquear exclusão.
-- Detalhe mostra resumo, equipamentos vinculados e histórico.
-- Loading e erro aparecem de forma simples.
+- Busca, status, tipo e paginação funcionam.
+- Criação e edição salvam na API.
+- Alteração de situação usa `PATCH /locations/:locationId/status`.
+- Exclusão usa `DELETE /locations/:locationId`.
+- Erro da API aparece quando a exclusão for bloqueada.
+- Detalhe carrega pelo ID da URL.
+- Detalhe mostra informações gerais, equipamentos vinculados e histórico.
+- A tela mantém loading, erro e estado vazio simples.
