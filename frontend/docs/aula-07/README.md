@@ -278,19 +278,20 @@ frontend/src/features/equipment/services/equipmentService.ts
 Passos:
 
 1. A página chama `equipmentService.getEquipmentList()`;
-2. o service faz `GET /equipment`;
+2. o service faz `GET /equipment` com `page` e `pageSize`;
 3. a API retorna `{ data, meta }`;
-4. a página guarda `data` no estado `equipments`;
-5. a tabela recebe `equipments` por props;
-6. enquanto carrega, a tabela mostra loading;
-7. se der erro, aparece uma mensagem simples;
-8. se a lista vier vazia, aparece o estado vazio.
+4. a página usa `data` para montar as linhas;
+5. a página usa `meta.total` para configurar a paginação;
+6. a tabela recebe `equipments` e `pagination` por props;
+7. enquanto carrega, a tabela mostra loading;
+8. se der erro, aparece uma mensagem simples;
+9. se a lista vier vazia, aparece o estado vazio.
 
 TODO para evoluir depois:
 
 - adicionar debounce na busca;
 - buscar apenas quando o aluno clicar em pesquisar;
-- usar paginação real com `meta.page` e `meta.totalPages`.
+- criar um componente próprio para o rodapé da paginação.
 
 ## Integração do detalhe
 

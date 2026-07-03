@@ -1,5 +1,5 @@
 import { Alert, App as AntDesignApp, Empty } from 'antd'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppLayout } from '../../../../app/layout/AppLayout'
 import { EquipmentFilters } from '../../components/EquipmentFilters'
@@ -28,6 +28,7 @@ import {
   typeOptions,
   type CreateEquipmentPayload,
   type Equipment,
+  type EquipmentLocationOption,
   type EquipmentSummary,
   type EquipmentSummaryResponse,
   type EquipmentType,
@@ -41,6 +42,8 @@ const emptySummary: EquipmentSummaryResponse = {
   inMaintenance: 0,
   inactive: 0,
 }
+
+const defaultPageSize = 10
 
 function buildSummaryCards(summary: EquipmentSummaryResponse): EquipmentSummary[] {
   return [
@@ -81,12 +84,14 @@ function buildSummaryCards(summary: EquipmentSummaryResponse): EquipmentSummary[
 
 function withLocationName(
   equipment: Equipment,
-  locationLabelById: Map<string, string>,
+  locationOptions: EquipmentLocationOption[],
 ): Equipment {
+  const location = locationOptions.find((option) => option.id === equipment.locationId)
+
   return {
     ...equipment,
     locationName: equipment.locationId
-      ? locationLabelById.get(equipment.locationId) ?? 'Localização não encontrada'
+      ? location?.label ?? 'Localização não encontrada'
       : 'Sem localização',
   }
 }
@@ -112,21 +117,22 @@ export function EquipmentPage() {
   const [searchText, setSearchText] = useState('')
   const [selectedStatus, setSelectedStatus] = useState<EquipmentStatus>()
   const [selectedType, setSelectedType] = useState<EquipmentType>()
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(defaultPageSize)
   const [formMode, setFormMode] = useState<EquipmentFormMode>('create')
   const [isFormModalOpen, setIsFormModalOpen] = useState(false)
   const [equipmentInForm, setEquipmentInForm] = useState<Equipment>()
   const [equipmentInStatus, setEquipmentInStatus] = useState<Equipment>()
   const [equipmentToRemove, setEquipmentToRemove] = useState<Equipment>()
 
-  const listParams = useMemo(
-    () => ({
-      // TODO Aula 07: evoluir este ponto para debounce, paginação ou busca ao pressionar Enter.
-      search: searchText,
-      status: selectedStatus,
-      type: selectedType,
-    }),
-    [searchText, selectedStatus, selectedType],
-  )
+  // Estes parâmetros vão para a API. Quando algum muda, a listagem é buscada de novo.
+  const listParams = {
+    search: searchText,
+    status: selectedStatus,
+    type: selectedType,
+    page: currentPage,
+    pageSize,
+  }
 
   const equipmentListQuery = useEquipmentList(listParams)
   const equipmentSummaryQuery = useEquipmentSummary()
@@ -135,14 +141,9 @@ export function EquipmentPage() {
   const updateEquipment = useUpdateEquipment()
   const updateEquipmentStatus = useUpdateEquipmentStatus()
 
-  const locationOptions = useMemo(
-    () => locationOptionsQuery.data ?? [],
-    [locationOptionsQuery.data],
-  )
-  const equipments = useMemo(
-    () => equipmentListQuery.data?.data ?? [],
-    [equipmentListQuery.data],
-  )
+  const locationOptions = locationOptionsQuery.data ?? []
+  const equipments = equipmentListQuery.data?.data ?? []
+  const paginationInfo = equipmentListQuery.data?.meta
   const summary = equipmentSummaryQuery.data ?? emptySummary
   const isLoading =
     equipmentListQuery.isLoading ||
@@ -155,17 +156,10 @@ export function EquipmentPage() {
   const isSavingForm = createEquipment.isPending || updateEquipment.isPending
   const isSavingStatus = updateEquipmentStatus.isPending
 
-  const locationLabelById = useMemo(
-    () => new Map(locationOptions.map((location) => [location.id, location.label])),
-    [locationOptions],
+  const visibleEquipment = equipments.map((equipment) =>
+    withLocationName(equipment, locationOptions),
   )
-
-  const visibleEquipment = useMemo(
-    () => equipments.map((equipment) => withLocationName(equipment, locationLabelById)),
-    [equipments, locationLabelById],
-  )
-
-  const summaryCards = useMemo(() => buildSummaryCards(summary), [summary])
+  const summaryCards = buildSummaryCards(summary)
 
   function handleViewEquipment(equipment: Equipment) {
     navigate(`/equipment/${equipment.id}`)
@@ -240,6 +234,27 @@ export function EquipmentPage() {
     setSearchText('')
     setSelectedStatus(undefined)
     setSelectedType(undefined)
+    setCurrentPage(1)
+  }
+
+  function handleSearchChange(value: string) {
+    setSearchText(value)
+    setCurrentPage(1)
+  }
+
+  function handleStatusChange(value?: EquipmentStatus) {
+    setSelectedStatus(value)
+    setCurrentPage(1)
+  }
+
+  function handleTypeChange(value?: EquipmentType) {
+    setSelectedType(value)
+    setCurrentPage(1)
+  }
+
+  function handlePageChange(nextPage: number, nextPageSize: number) {
+    setCurrentPage(nextPage)
+    setPageSize(nextPageSize)
   }
 
   return (
@@ -255,9 +270,9 @@ export function EquipmentPage() {
           selectedType={selectedType}
           statusOptions={statusOptions}
           typeOptions={typeOptions}
-          onSearchChange={setSearchText}
-          onStatusChange={setSelectedStatus}
-          onTypeChange={setSelectedType}
+          onSearchChange={handleSearchChange}
+          onStatusChange={handleStatusChange}
+          onTypeChange={handleTypeChange}
           onClear={handleClearFilters}
         />
 
@@ -276,6 +291,15 @@ export function EquipmentPage() {
           <EquipmentTable
             equipments={visibleEquipment}
             loading={isLoading}
+            pagination={{
+              current: currentPage,
+              pageSize,
+              total: paginationInfo?.total ?? 0,
+              showSizeChanger: true,
+              pageSizeOptions: [5, 10, 20],
+              showTotal: (total) => `${total} equipamentos`,
+              onChange: handlePageChange,
+            }}
             onChangeStatusEquipment={setEquipmentInStatus}
             onEditEquipment={handleEditEquipment}
             onRemoveEquipment={setEquipmentToRemove}
