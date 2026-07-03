@@ -611,6 +611,34 @@ Checkpoint:
 - abra o detalhe;
 - confira o historico recente.
 
+Fluxo visual depois de salvar:
+
+```mermaid
+sequenceDiagram
+  participant User as Usuario
+  participant Page as Pagina
+  participant SaveHook as Hook de salvar
+  participant Service as equipmentService
+  participant API as API
+  participant ListHook as Hook da lista
+  participant SummaryHook as Hook do resumo
+
+  User->>Page: salva criacao, edicao ou status
+  Page->>SaveHook: chama create, update ou updateStatus
+  SaveHook->>Service: chama funcao do service
+  Service->>API: POST, PUT ou PATCH
+  API-->>Service: dados salvos
+  Service-->>SaveHook: resposta da API
+  SaveHook-->>Page: sucesso
+  Page->>ListHook: reload()
+  Page->>SummaryHook: reload()
+  ListHook-->>Page: lista atualizada
+  SummaryHook-->>Page: cards atualizados
+  Page-->>User: tela atualizada
+```
+
+O ponto principal: depois de alterar dados no backend, a página chama `reload` para buscar novamente o que mudou.
+
 ## Projeto final: Localizacoes
 
 No projeto final, repita o mesmo padrao:
