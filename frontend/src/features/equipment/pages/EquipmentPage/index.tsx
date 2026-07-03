@@ -330,7 +330,7 @@ export function EquipmentPage() {
               total: paginationInfo?.total ?? 0,
               showSizeChanger: true,
               pageSizeOptions: [5, 10, 20],
-              showTotal: (total) => `${total} equipamentos`,
+              showTotal: (total) => `${total} equipamentos no total`,
               onChange: handlePageChange,
             }}
             onChangeStatusEquipment={setEquipmentInStatus}
