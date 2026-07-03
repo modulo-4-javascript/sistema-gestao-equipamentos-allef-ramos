@@ -14,6 +14,37 @@ api.ts -> equipmentService -> hooks -> pagina -> componentes
 
 Se algum trecho ja estiver ativo no seu projeto, use o passo como conferencia.
 
+## Vocabulário rápido
+
+Função assíncrona:
+
+```ts
+async function carregarEquipamentos() {
+  const response = await axiosApi.get('/equipment')
+  return response.data
+}
+```
+
+Em poucas palavras:
+
+- `async` permite usar `await`;
+- `await` espera a resposta da API antes de continuar;
+- a tela não trava enquanto a API responde.
+
+Instância:
+
+```ts
+export const axiosApi = axios.create({
+  baseURL: '/api/v1',
+})
+```
+
+Em poucas palavras:
+
+- uma instância é uma versão configurada de uma ferramenta;
+- `axiosApi` é o Axios já configurado para falar com a nossa API;
+- assim não repetimos `/api/v1` em toda chamada.
+
 ## Antes de comecar
 
 Entre na pasta do frontend:
@@ -232,7 +263,7 @@ export function getRequestErrorMessage(error: unknown) {
 }
 ```
 
-Hook da listagem:
+Ideia do hook da listagem:
 
 ```ts
 export function useEquipmentList(params: GetEquipmentListParams) {
@@ -272,6 +303,12 @@ export function useEquipmentList(params: GetEquipmentListParams) {
     reload: loadEquipmentList,
   }
 }
+```
+
+No arquivo final, essa mesma ideia aparece com `useCallback` para manter a função `reload` estável entre renderizações. O fluxo que importa para a aula é:
+
+```txt
+liga loading -> chama service -> guarda data ou erro -> desliga loading
 ```
 
 Hook de criacao:
