@@ -278,6 +278,24 @@ Leitura rápida:
 - os componentes recebem dados por props;
 - os types ajudam a manter o contrato entre tela e API.
 
+### Ciclo dos hooks com API
+
+```mermaid
+stateDiagram-v2
+  [*] --> Carregando: useEffect chama load
+  Carregando --> Sucesso: API respondeu
+  Carregando --> Erro: API falhou
+  Sucesso --> Carregando: filtro, pagina ou reload
+  Erro --> Carregando: tentar novamente
+```
+
+Leitura rápida:
+
+- o hook começa carregando dados;
+- se a API responder, guarda os dados no estado;
+- se a API falhar, guarda uma mensagem de erro;
+- filtros, paginação e `reload` podem iniciar uma nova busca.
+
 ## Vocabulário para explicar em sala
 
 Função assíncrona:
