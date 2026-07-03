@@ -28,23 +28,23 @@ interface CreateEquipmentState {
 interface UpdateEquipmentState {
   isLoading: boolean
   errorMessage: string
-  update: (payload: UpdateEquipmentMutationPayload) => Promise<EquipmentDetail>
+  update: (payload: UpdateEquipmentActionPayload) => Promise<EquipmentDetail>
 }
 
 interface UpdateEquipmentStatusState {
   isLoading: boolean
   errorMessage: string
   updateStatus: (
-    payload: UpdateEquipmentStatusMutationPayload,
+    payload: UpdateEquipmentStatusActionPayload,
   ) => Promise<EquipmentDetail>
 }
 
-interface UpdateEquipmentMutationPayload {
+interface UpdateEquipmentActionPayload {
   equipmentId: string
   payload: UpdateEquipmentPayload
 }
 
-interface UpdateEquipmentStatusMutationPayload {
+interface UpdateEquipmentStatusActionPayload {
   equipmentId: string
   payload: UpdateEquipmentStatusPayload
 }
@@ -237,7 +237,7 @@ export function useUpdateEquipment(): UpdateEquipmentState {
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
-  async function update({ equipmentId, payload }: UpdateEquipmentMutationPayload) {
+  async function update({ equipmentId, payload }: UpdateEquipmentActionPayload) {
     setIsLoading(true)
     setErrorMessage('')
 
@@ -265,7 +265,7 @@ export function useUpdateEquipmentStatus(): UpdateEquipmentStatusState {
   async function updateStatus({
     equipmentId,
     payload,
-  }: UpdateEquipmentStatusMutationPayload) {
+  }: UpdateEquipmentStatusActionPayload) {
     setIsLoading(true)
     setErrorMessage('')
 
