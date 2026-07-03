@@ -14,15 +14,13 @@ import type { EquipmentStatusFormValues } from '../../components/EquipmentStatus
 import { EquipmentTable } from '../../components/EquipmentTable'
 import { PageHeader } from '../../components/PageHeader'
 import { SummaryCards } from '../../components/SummaryCards'
-import {
-  getRequestErrorMessage,
-  useCreateEquipment,
-  useEquipmentList,
-  useEquipmentLocationOptions,
-  useEquipmentSummary,
-  useUpdateEquipment,
-  useUpdateEquipmentStatus,
-} from '../../hooks/useEquipmentQueries'
+import { getRequestErrorMessage } from '../../hooks/getRequestErrorMessage'
+import { useCreateEquipment } from '../../hooks/useCreateEquipment'
+import { useEquipmentList } from '../../hooks/useEquipmentList'
+import { useEquipmentLocationOptions } from '../../hooks/useEquipmentLocationOptions'
+import { useEquipmentSummary } from '../../hooks/useEquipmentSummary'
+import { useUpdateEquipment } from '../../hooks/useUpdateEquipment'
+import { useUpdateEquipmentStatus } from '../../hooks/useUpdateEquipmentStatus'
 import {
   statusOptions,
   typeOptions,

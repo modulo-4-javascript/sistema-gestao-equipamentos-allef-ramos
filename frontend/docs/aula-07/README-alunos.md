@@ -85,6 +85,21 @@ Em poucas palavras:
 - usamos para sincronizar a tela com algo externo, como uma API;
 - o array `[]` diz quando o efeito deve rodar.
 
+useCallback:
+
+```ts
+const carregarEquipamentos = useCallback(async () => {
+  const response = await axiosApi.get('/equipment')
+  return response.data
+}, [])
+```
+
+Em poucas palavras:
+
+- `useCallback` guarda uma função entre renderizações;
+- usamos quando essa função entra nas dependências de um `useEffect`;
+- o array `[]` diz quando a função deve ser recriada.
+
 ## Antes de comecar
 
 Entre na pasta do frontend:
@@ -288,11 +303,20 @@ O que entender:
 
 ## Passo 4 - Conferir os hooks
 
-Arquivo:
+Arquivos:
 
 ```txt
-frontend/src/features/equipment/hooks/useEquipmentQueries.ts
+frontend/src/features/equipment/hooks/getRequestErrorMessage.ts
+frontend/src/features/equipment/hooks/useEquipmentList.ts
+frontend/src/features/equipment/hooks/useEquipmentSummary.ts
+frontend/src/features/equipment/hooks/useEquipmentDetails.ts
+frontend/src/features/equipment/hooks/useEquipmentLocationOptions.ts
+frontend/src/features/equipment/hooks/useCreateEquipment.ts
+frontend/src/features/equipment/hooks/useUpdateEquipment.ts
+frontend/src/features/equipment/hooks/useUpdateEquipmentStatus.ts
 ```
+
+Cada hook fica em um arquivo com o mesmo nome dele. Isso facilita abrir só o fluxo que está sendo explicado no momento.
 
 Tratamento simples de erro:
 
@@ -356,7 +380,7 @@ export function useEquipmentList(params: GetEquipmentListParams) {
 }
 ```
 
-No arquivo final, essa mesma ideia aparece com `useCallback` para manter a função `reload` estável entre renderizações. O fluxo que importa para a aula é:
+No arquivo `useEquipmentList.ts`, essa mesma ideia aparece com `useCallback` para manter a função `reload` estável entre renderizações. O fluxo que importa para a aula é:
 
 ```txt
 liga loading -> chama service -> guarda data ou erro -> desliga loading

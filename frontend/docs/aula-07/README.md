@@ -323,6 +323,12 @@ useEffect:
 - serve para sincronizar o componente com algo externo, como uma API;
 - o array de dependências controla quando ele roda de novo.
 
+useCallback:
+
+- guarda uma função entre renderizações;
+- ajuda quando essa função entra no array de dependências de um `useEffect`;
+- o array de dependências controla quando a função deve ser recriada.
+
 ## Camadas usadas na integração
 
 ### Service
@@ -355,11 +361,19 @@ No ponto de partida, esse conteúdo está comentado para ser descomentado junto 
 
 ### Hooks
 
-Arquivo:
+Arquivos:
 
 ```txt
-frontend/src/features/equipment/hooks/useEquipmentQueries.ts
+frontend/src/features/equipment/hooks/useEquipmentList.ts
+frontend/src/features/equipment/hooks/useEquipmentSummary.ts
+frontend/src/features/equipment/hooks/useEquipmentDetails.ts
+frontend/src/features/equipment/hooks/useEquipmentLocationOptions.ts
+frontend/src/features/equipment/hooks/useCreateEquipment.ts
+frontend/src/features/equipment/hooks/useUpdateEquipment.ts
+frontend/src/features/equipment/hooks/useUpdateEquipmentStatus.ts
 ```
+
+Cada hook fica em um arquivo com o mesmo nome dele.
 
 Aqui ficam hooks com `useState` e `useEffect`.
 

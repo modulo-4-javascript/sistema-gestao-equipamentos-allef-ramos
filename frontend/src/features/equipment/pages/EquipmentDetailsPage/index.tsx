@@ -12,13 +12,11 @@ import { EquipmentNotesCard } from '../../components/EquipmentNotesCard'
 import { EquipmentRemoveModal } from '../../components/EquipmentRemoveModal'
 import { EquipmentStatusModal } from '../../components/EquipmentStatusModal'
 import type { EquipmentStatusFormValues } from '../../components/EquipmentStatusModal'
-import {
-  getRequestErrorMessage,
-  useEquipmentDetails,
-  useEquipmentLocationOptions,
-  useUpdateEquipment,
-  useUpdateEquipmentStatus,
-} from '../../hooks/useEquipmentQueries'
+import { getRequestErrorMessage } from '../../hooks/getRequestErrorMessage'
+import { useEquipmentDetails } from '../../hooks/useEquipmentDetails'
+import { useEquipmentLocationOptions } from '../../hooks/useEquipmentLocationOptions'
+import { useUpdateEquipment } from '../../hooks/useUpdateEquipment'
+import { useUpdateEquipmentStatus } from '../../hooks/useUpdateEquipmentStatus'
 import {
   formatEquipmentDate,
   getEquipmentStatusLabel,
