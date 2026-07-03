@@ -289,7 +289,6 @@ Passos:
 
 TODO para evoluir depois:
 
-- adicionar debounce na busca;
 - buscar apenas quando o aluno clicar em pesquisar;
 - criar um componente próprio para o rodapé da paginação.
 
