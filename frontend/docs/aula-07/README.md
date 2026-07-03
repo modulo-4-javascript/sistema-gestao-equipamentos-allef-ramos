@@ -176,6 +176,108 @@ GET /api/v1/equipment
 
 Esse `GET` pede a lista de equipamentos. A API responde com JSON, o hook guarda a resposta em estado React e a tela renderiza a tabela.
 
+## Diagramas para explicar
+
+### Estrutura do backend Node
+
+```mermaid
+flowchart TB
+  Server["server.ts\ninicia o servidor HTTP"] --> App["app.ts\nconfigura Express, rotas e middlewares"]
+  App --> Equipment["features/equipment"]
+  App --> Locations["features/locations"]
+  App --> History["features/history"]
+
+  Equipment --> EquipmentRoutes["routes\nendpoints da feature"]
+  EquipmentRoutes --> EquipmentSchemas["schemas\nvalidacao da entrada"]
+  EquipmentRoutes --> EquipmentController["controller\ntraduz HTTP para regra de negocio"]
+  EquipmentController --> EquipmentService["service\nregras da aplicacao"]
+  EquipmentService --> EquipmentRepository["repository\nacesso aos dados"]
+
+  Locations --> LocationRoutes["routes"]
+  LocationRoutes --> LocationController["controller"]
+  LocationController --> LocationService["service"]
+  LocationService --> LocationRepository["repository"]
+
+  History --> HistoryService["service"]
+  HistoryService --> HistoryRepository["repository"]
+
+  EquipmentRepository --> Database[("PostgreSQL")]
+  LocationRepository --> Database
+  HistoryRepository --> Database
+
+  Shared["shared\nerrors, database, http, middlewares, pagination"] -.-> App
+  Shared -.-> Equipment
+  Shared -.-> Locations
+  Shared -.-> History
+```
+
+Leitura rápida:
+
+- `server.ts` sobe a API;
+- `app.ts` monta o Express e registra as rotas;
+- cada feature separa rota, validação, controller, service e repository;
+- `shared` guarda peças comuns usadas por várias features.
+
+### Fluxo de comunicação frontend e backend
+
+```mermaid
+sequenceDiagram
+  participant User as Usuario
+  participant Page as Pagina React
+  participant Hook as Hook useState/useEffect
+  participant Service as equipmentService
+  participant Axios as axiosApi
+  participant Api as API Express
+  participant Repo as Repository
+  participant DB as PostgreSQL
+
+  User->>Page: abre a tela ou altera filtro
+  Page->>Hook: atualiza estado da busca/paginacao
+  Hook->>Service: chama getEquipmentList(params)
+  Service->>Axios: axiosApi.get('/equipment')
+  Axios->>Api: GET /api/v1/equipment
+  Api->>Repo: busca dados paginados
+  Repo->>DB: consulta equipamentos
+  DB-->>Repo: linhas encontradas
+  Repo-->>Api: data + meta
+  Api-->>Axios: JSON da resposta
+  Axios-->>Service: response.data
+  Service-->>Hook: lista pronta para a tela
+  Hook-->>Page: setData, setIsLoading, setErrorMessage
+  Page-->>User: renderiza tabela, cards, loading ou erro
+```
+
+Leitura rápida:
+
+- a página não chama a API diretamente;
+- o hook controla estado, loading e erro;
+- o service centraliza URLs e métodos HTTP;
+- o backend valida, aplica regras e busca os dados no banco;
+- a resposta volta como JSON e a tela renderiza.
+
+### Camadas do frontend nesta aula
+
+```mermaid
+flowchart LR
+  Page["Page\nEquipmentPage"] --> Hook["Hooks\nuseState + useEffect"]
+  Hook --> Service["Service\nequipmentService"]
+  Service --> Axios["API base\naxiosApi"]
+  Axios --> Backend["Backend\n/api/v1"]
+
+  Page --> Components["Components\nTable, Filters, Modals, Cards"]
+  Types["Types\nEquipment, Payloads, Status"] -.-> Page
+  Types -.-> Hook
+  Types -.-> Service
+```
+
+Leitura rápida:
+
+- a página coordena estado e eventos;
+- os hooks concentram loading, erro e chamadas;
+- o service conversa com o backend via `axiosApi`;
+- os componentes recebem dados por props;
+- os types ajudam a manter o contrato entre tela e API.
+
 ## Vocabulário para explicar em sala
 
 Função assíncrona:
@@ -189,6 +291,12 @@ Instância:
 - uma instância é uma versão configurada de uma ferramenta;
 - `axiosApi` é uma instância do Axios;
 - ela já sabe a URL base da API, então os services ficam mais curtos.
+
+useEffect:
+
+- roda depois que o componente aparece na tela;
+- serve para sincronizar o componente com algo externo, como uma API;
+- o array de dependências controla quando ele roda de novo.
 
 ## Camadas usadas na integração
 

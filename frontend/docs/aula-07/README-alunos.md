@@ -14,6 +14,28 @@ api.ts -> equipmentService -> hooks -> pagina -> componentes
 
 Se algum trecho ja estiver ativo no seu projeto, use o passo como conferencia.
 
+## Mapa visual da integração
+
+```mermaid
+flowchart LR
+  ApiBase["api.ts\naxiosApi"] --> Service["equipmentService\nGET, POST, PUT, PATCH"]
+  Service --> Hooks["hooks\nuseState + useEffect"]
+  Hooks --> Page["pagina\nestado e eventos"]
+  Page --> Components["componentes\ntabela, filtros, modais"]
+  Components --> User["usuario"]
+
+  Backend["backend\n/api/v1"] --> Service
+  Service --> Backend
+```
+
+Leitura rápida:
+
+- `api.ts` guarda o Axios configurado;
+- `equipmentService` chama as rotas da API;
+- os hooks guardam dados, loading e erro;
+- a página decide o que mostrar;
+- os componentes só recebem props e disparam eventos.
+
 ## Vocabulário rápido
 
 Função assíncrona:
@@ -44,6 +66,20 @@ Em poucas palavras:
 - uma instância é uma versão configurada de uma ferramenta;
 - `axiosApi` é o Axios já configurado para falar com a nossa API;
 - assim não repetimos `/api/v1` em toda chamada.
+
+useEffect:
+
+```ts
+useEffect(() => {
+  void carregarEquipamentos()
+}, [])
+```
+
+Em poucas palavras:
+
+- `useEffect` roda depois que o componente aparece na tela;
+- usamos para sincronizar a tela com algo externo, como uma API;
+- o array `[]` diz quando o efeito deve rodar.
 
 ## Antes de comecar
 
@@ -396,6 +432,28 @@ O que entender:
 - `searchText` muda a cada tecla;
 - `debouncedSearchText` muda só depois de 400ms sem digitar;
 - a API usa `debouncedSearchText`, então não busca a cada tecla.
+
+Fluxo visual do debounce:
+
+```mermaid
+sequenceDiagram
+  participant User as Usuario
+  participant Page as Pagina
+  participant Timer as Timer 400ms
+  participant Hook as Hook da lista
+  participant API as API
+
+  User->>Page: digita no campo de busca
+  Page->>Page: atualiza searchText
+  Page->>Timer: agenda copia para debouncedSearchText
+  User->>Page: digita de novo antes de 400ms
+  Page->>Timer: cancela timer anterior
+  Page->>Timer: agenda novo timer
+  Timer-->>Page: 400ms sem digitar
+  Page->>Page: atualiza debouncedSearchText
+  Page->>Hook: monta listParams
+  Hook->>API: busca equipamentos filtrados
+```
 
 Confira os parâmetros enviados para a API:
 
