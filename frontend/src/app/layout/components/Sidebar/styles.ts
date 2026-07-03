@@ -2,6 +2,11 @@ import { Layout, Menu } from 'antd'
 import styled from 'styled-components'
 
 export const NavSider = styled(Layout.Sider)`
+  position: sticky !important;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+  overflow: hidden;
   background: linear-gradient(180deg, #002a64 0%, #007c8c 100%) !important;
   box-shadow:
     0 4px 6px -1px rgb(0 0 0 / 10%),
@@ -10,13 +15,23 @@ export const NavSider = styled(Layout.Sider)`
   .ant-layout-sider-children {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
     padding: 24px 0;
   }
 
   @media (max-width: 800px) {
+    z-index: 20;
+    height: auto;
     width: 100% !important;
     min-width: 100% !important;
     max-width: 100% !important;
+
+    .ant-layout-sider-children {
+      height: auto;
+      overflow: visible;
+      padding: 16px 0 12px;
+    }
   }
 `
 

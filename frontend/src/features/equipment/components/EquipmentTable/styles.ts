@@ -5,10 +5,23 @@ export const TableCard = styled(Card)`
   &.ant-card {
     border-color: #dde6ee;
     box-shadow: 0 1px 2px rgb(17 24 39 / 5%);
+    overflow: hidden;
+  }
+
+  .ant-table-body {
+    max-height: clamp(280px, 42vh, 520px);
   }
 
   .ant-table-thead > tr > th {
     font-weight: 700;
+  }
+
+  .ant-table-placeholder .ant-table-cell {
+    height: clamp(280px, 42vh, 520px);
+  }
+
+  .ant-pagination {
+    padding: 0 16px;
   }
 `
 
