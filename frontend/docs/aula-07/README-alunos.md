@@ -139,7 +139,7 @@ async getEquipmentList(params: GetEquipmentListParams = {}) {
   const response = await axiosApi.get<PaginatedResult<Equipment>>('/equipment', {
     params: {
       page: 1,
-      pageSize: 100,
+      pageSize: 10,
       ...params,
     },
   })
@@ -213,6 +213,7 @@ O que entender:
 - `POST` cria;
 - `PUT` edita;
 - `PATCH` altera apenas uma parte;
+- `page` e `pageSize` controlam a paginação da listagem;
 - `const response = await axiosApi...` espera a API responder;
 - `return response.data` entrega para a tela so o corpo da resposta.
 
@@ -302,12 +303,43 @@ const equipmentSummaryQuery = useEquipmentSummary()
 const locationOptionsQuery = useEquipmentLocationOptions()
 ```
 
+Confira os estados da paginação:
+
+```ts
+const [currentPage, setCurrentPage] = useState(1)
+const [pageSize, setPageSize] = useState(10)
+```
+
+Confira os parâmetros enviados para a API:
+
+```ts
+const listParams = {
+  search: searchText,
+  status: selectedStatus,
+  type: selectedType,
+  page: currentPage,
+  pageSize,
+}
+```
+
 Confira os dados:
 
 ```ts
 const equipments = equipmentListQuery.data?.data ?? []
+const paginationInfo = equipmentListQuery.data?.meta
 const summary = equipmentSummaryQuery.data ?? emptySummary
 const locationOptions = locationOptionsQuery.data ?? []
+```
+
+Confira a paginação da tabela:
+
+```ts
+pagination={{
+  current: currentPage,
+  pageSize,
+  total: paginationInfo?.total ?? 0,
+  onChange: handlePageChange,
+}}
 ```
 
 Confira loading e erro:
@@ -327,6 +359,7 @@ const loadError =
 Checkpoint:
 
 - a tabela carrega equipamentos reais;
+- a tabela pagina usando o `meta.total` da API;
 - os cards mostram totais reais;
 - filtros disparam nova busca;
 - se a API falhar, aparece mensagem simples.

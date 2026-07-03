@@ -24,6 +24,7 @@ import {
 interface EquipmentTableProps {
   equipments: Equipment[]
   loading?: boolean
+  pagination?: TableProps<Equipment>['pagination']
   onChangeStatusEquipment: (equipment: Equipment) => void
   onEditEquipment: (equipment: Equipment) => void
   onRemoveEquipment: (equipment: Equipment) => void
@@ -160,6 +161,7 @@ function getColumns({
 export function EquipmentTable({
   equipments,
   loading,
+  pagination,
   onChangeStatusEquipment,
   onEditEquipment,
   onRemoveEquipment,
@@ -178,7 +180,7 @@ export function EquipmentTable({
         dataSource={equipments}
         loading={loading}
         locale={{ emptyText: 'Nenhum equipamento encontrado.' }}
-        pagination={false}
+        pagination={pagination}
         // rowKey informa qual campo identifica cada linha de forma única.
         rowKey="id"
         scroll={{ x: 980 }}

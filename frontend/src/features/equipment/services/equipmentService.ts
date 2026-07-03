@@ -34,7 +34,7 @@ export const equipmentService = {
     const response = await axiosApi.get<PaginatedResult<Equipment>>('/equipment', {
       params: {
         page: 1,
-        pageSize: 100,
+        pageSize: 10,
         // ...params é um spread operator que pega os parâmetros passados e adiciona ao objeto params.
         // spread operator é uma forma de copiar propriedades de um objeto para outro.
         ...params,
