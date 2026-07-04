@@ -26,5 +26,8 @@ export const appTheme: ThemeConfig = {
       headerColor: '#6B7280',
       rowHoverBg: '#F4F7FA',
     },
+    Input: {
+      paddingBlock: 8
+    },
   },
 }
