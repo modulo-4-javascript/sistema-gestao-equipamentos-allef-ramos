@@ -1,26 +1,26 @@
-import { Alert, App as AntDesignApp, Empty } from 'antd'
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { AppLayout } from '../../../../app/layout/AppLayout'
-import { EquipmentFilters } from '../../components/EquipmentFilters'
-import { EquipmentFormModal } from '../../components/EquipmentFormModal'
+import { Alert, App as AntDesignApp, Empty } from "antd";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AppLayout } from "../../../../app/layout/AppLayout";
+import { EquipmentFilters } from "../../components/EquipmentFilters";
+import { EquipmentFormModal } from "../../components/EquipmentFormModal";
 import type {
   EquipmentFormMode,
   EquipmentFormValues,
-} from '../../components/EquipmentFormModal'
-import { EquipmentRemoveModal } from '../../components/EquipmentRemoveModal'
-import { EquipmentStatusModal } from '../../components/EquipmentStatusModal'
-import type { EquipmentStatusFormValues } from '../../components/EquipmentStatusModal'
-import { EquipmentTable } from '../../components/EquipmentTable'
-import { PageHeader } from '../../components/PageHeader'
-import { SummaryCards } from '../../components/SummaryCards'
-import { getRequestErrorMessage } from '../../hooks/getRequestErrorMessage'
-import { useCreateEquipment } from '../../hooks/useCreateEquipment'
-import { useEquipmentList } from '../../hooks/useEquipmentList'
-import { useEquipmentLocationOptions } from '../../hooks/useEquipmentLocationOptions'
-import { useEquipmentSummary } from '../../hooks/useEquipmentSummary'
-import { useUpdateEquipment } from '../../hooks/useUpdateEquipment'
-import { useUpdateEquipmentStatus } from '../../hooks/useUpdateEquipmentStatus'
+} from "../../components/EquipmentFormModal";
+import { EquipmentRemoveModal } from "../../components/EquipmentRemoveModal";
+import { EquipmentStatusModal } from "../../components/EquipmentStatusModal";
+import type { EquipmentStatusFormValues } from "../../components/EquipmentStatusModal";
+import { EquipmentTable } from "../../components/EquipmentTable";
+import { PageHeader } from "../../components/PageHeader";
+import { SummaryCards } from "../../components/SummaryCards";
+import { getRequestErrorMessage } from "../../hooks/getRequestErrorMessage";
+import { useCreateEquipment } from "../../hooks/useCreateEquipment";
+import { useEquipmentList } from "../../hooks/useEquipmentList";
+import { useEquipmentLocationOptions } from "../../hooks/useEquipmentLocationOptions";
+import { useEquipmentSummary } from "../../hooks/useEquipmentSummary";
+import { useUpdateEquipment } from "../../hooks/useUpdateEquipment";
+import { useUpdateEquipmentStatus } from "../../hooks/useUpdateEquipmentStatus";
 import {
   statusOptions,
   typeOptions,
@@ -31,54 +31,57 @@ import {
   type EquipmentSummaryResponse,
   type EquipmentType,
   type EquipmentStatus,
-} from '../../types/equipment'
-import { Container } from './styles'
+} from "../../types/equipment";
+import { Container } from "./styles";
+import { useDeleteEquipment } from "../../hooks/useDeleteEquipment";
 
 const emptySummary: EquipmentSummaryResponse = {
   total: 0,
   available: 0,
   inMaintenance: 0,
   inactive: 0,
-}
+};
 
-const defaultPageSize = 10
+const defaultPageSize = 10;
 
 // A API devolve números simples. Esta função adapta esses números para os cards da tela.
-function buildSummaryCards(summary: EquipmentSummaryResponse): EquipmentSummary[] {
+function buildSummaryCards(
+  summary: EquipmentSummaryResponse,
+): EquipmentSummary[] {
   return [
     {
-      id: 'total',
-      title: 'Total',
+      id: "total",
+      title: "Total",
       value: summary.total,
-      icon: 'total',
-      lineColor: 'linear-gradient(90deg, #002A64, #007C8C)',
-      iconBackground: '#E1E8FD',
+      icon: "total",
+      lineColor: "linear-gradient(90deg, #002A64, #007C8C)",
+      iconBackground: "#E1E8FD",
     },
     {
-      id: 'available',
-      title: 'Disponíveis',
+      id: "available",
+      title: "Disponíveis",
       value: summary.available,
-      icon: 'available',
-      lineColor: '#25B8A7',
-      iconBackground: '#E6FFFB',
+      icon: "available",
+      lineColor: "#25B8A7",
+      iconBackground: "#E6FFFB",
     },
     {
-      id: 'maintenance',
-      title: 'Em manutenção',
+      id: "maintenance",
+      title: "Em manutenção",
       value: summary.inMaintenance,
-      icon: 'maintenance',
-      lineColor: '#007C8C',
-      iconBackground: '#E6F4FF',
+      icon: "maintenance",
+      lineColor: "#007C8C",
+      iconBackground: "#E6F4FF",
     },
     {
-      id: 'inactive',
-      title: 'Inativos',
+      id: "inactive",
+      title: "Inativos",
       value: summary.inactive,
-      icon: 'inactive',
-      lineColor: '#6B7280',
-      iconBackground: '#F3F4F6',
+      icon: "inactive",
+      lineColor: "#6B7280",
+      iconBackground: "#F3F4F6",
     },
-  ]
+  ];
 }
 
 // A listagem vem com locationId. Aqui adicionamos o nome da localização para a tabela.
@@ -86,18 +89,21 @@ function withLocationName(
   equipment: Equipment,
   locationOptions: EquipmentLocationOption[],
 ): Equipment {
-  const location = locationOptions.find((option) => option.id === equipment.locationId)
+  const location = locationOptions.find(
+    (option) => option.id === equipment.locationId,
+  );
 
   return {
     ...equipment,
     locationName: equipment.locationId
-      ? location?.label ?? 'Localização não encontrada'
-      : 'Sem localização',
-  }
+      ? (location?.label ?? "Localização não encontrada")
+      : "Sem localização",
+  };
 }
 
-// Antes de enviar para a API, limpamos espaços e transformamos campos vazios em undefined/null.
-function buildEquipmentPayload(values: EquipmentFormValues): CreateEquipmentPayload {
+function buildEquipmentPayload(
+  values: EquipmentFormValues,
+): CreateEquipmentPayload {
   return {
     name: values.name.trim(),
     type: values.type,
@@ -107,42 +113,38 @@ function buildEquipmentPayload(values: EquipmentFormValues): CreateEquipmentPayl
     locationId: values.locationId ?? null,
     responsibleUserName: values.responsibleUserName?.trim() || null,
     notes: values.notes?.trim() || null,
-  }
+  };
 }
 
 export function EquipmentPage() {
-  const { message: messageApi } = AntDesignApp.useApp()
-  const navigate = useNavigate()
+  const { message: messageApi } = AntDesignApp.useApp();
+  const navigate = useNavigate();
 
   // Filtros e paginação controlam quais equipamentos a API deve devolver.
-  const [searchText, setSearchText] = useState('')
-  const [debouncedSearchText, setDebouncedSearchText] = useState('')
-  const [selectedStatus, setSelectedStatus] = useState<EquipmentStatus>()
-  const [selectedType, setSelectedType] = useState<EquipmentType>()
-  const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize, setPageSize] = useState(defaultPageSize)
+  const [searchText, setSearchText] = useState("");
+  const [debouncedSearchText, setDebouncedSearchText] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState<EquipmentStatus>();
+  const [selectedType, setSelectedType] = useState<EquipmentType>();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(defaultPageSize);
 
   // Estes estados controlam apenas os modais da página.
-  const [formMode, setFormMode] = useState<EquipmentFormMode>('create')
-  const [isFormModalOpen, setIsFormModalOpen] = useState(false)
-  const [equipmentInForm, setEquipmentInForm] = useState<Equipment>()
-  const [equipmentInStatus, setEquipmentInStatus] = useState<Equipment>()
-  const [equipmentToRemove, setEquipmentToRemove] = useState<Equipment>()
+  const [formMode, setFormMode] = useState<EquipmentFormMode>("create");
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [equipmentInForm, setEquipmentInForm] = useState<Equipment>();
+  const [equipmentInStatus, setEquipmentInStatus] = useState<Equipment>();
+  const [equipmentToRemove, setEquipmentToRemove] = useState<Equipment>();
 
-  // Debounce da busca:
-  // 1. searchText muda a cada tecla digitada.
-  // 2. esperamos 400ms antes de copiar esse valor para debouncedSearchText.
-  // 3. como a API usa debouncedSearchText, evitamos uma request a cada tecla.
   useEffect(() => {
     // Agenda a atualização da busca para daqui a 400ms.
     const timeoutId = setTimeout(() => {
-      setDebouncedSearchText(searchText)
-      setCurrentPage(1)
-    }, 400)
+      setDebouncedSearchText(searchText);
+      setCurrentPage(1);
+    }, 400);
 
     // Se o usuário digitar de novo antes dos 400ms, cancelamos o timer anterior.
-    return () => clearTimeout(timeoutId)
-  }, [searchText])
+    return () => clearTimeout(timeoutId);
+  }, [searchText]);
 
   // Estes parâmetros vão para a API. Quando algum muda, a listagem é buscada de novo.
   const listParams = {
@@ -151,45 +153,47 @@ export function EquipmentPage() {
     type: selectedType,
     page: currentPage,
     pageSize,
-  }
+  };
 
   // Hooks que usam useEffect + axios para buscar e salvar dados na API.
-  const equipmentListQuery = useEquipmentList(listParams)
-  const equipmentSummaryQuery = useEquipmentSummary()
-  const locationOptionsQuery = useEquipmentLocationOptions()
-  const createEquipment = useCreateEquipment()
-  const updateEquipment = useUpdateEquipment()
-  const updateEquipmentStatus = useUpdateEquipmentStatus()
+  const equipmentListQuery = useEquipmentList(listParams);
+  const equipmentSummaryQuery = useEquipmentSummary();
+  const locationOptionsQuery = useEquipmentLocationOptions();
+  const createEquipment = useCreateEquipment();
+  const updateEquipment = useUpdateEquipment();
+  const updateEquipmentStatus = useUpdateEquipmentStatus();
+  const deleteEquipment = useDeleteEquipment();
 
   // Aqui tiramos os dados de dentro dos hooks e colocamos valores seguros para renderizar.
-  const locationOptions = locationOptionsQuery.data ?? []
-  const equipments = equipmentListQuery.data?.data ?? []
-  const paginationInfo = equipmentListQuery.data?.meta
-  const summary = equipmentSummaryQuery.data ?? emptySummary
+  const locationOptions = locationOptionsQuery.data ?? [];
+  const equipments = equipmentListQuery.data?.data ?? [];
+  const paginationInfo = equipmentListQuery.data?.meta;
+  const summary = equipmentSummaryQuery.data ?? emptySummary;
 
   // A tela considera carregando enquanto qualquer dado principal ainda está chegando.
   const isLoading =
     equipmentListQuery.isLoading ||
     equipmentSummaryQuery.isLoading ||
-    locationOptionsQuery.isLoading
+    locationOptionsQuery.isLoading;
 
   // Mostramos a primeira mensagem de erro encontrada.
   const loadError =
     equipmentListQuery.errorMessage ||
     equipmentSummaryQuery.errorMessage ||
-    locationOptionsQuery.errorMessage
-  const isSavingForm = createEquipment.isLoading || updateEquipment.isLoading
-  const isSavingStatus = updateEquipmentStatus.isLoading
+    locationOptionsQuery.errorMessage;
+  const isSavingForm = createEquipment.isLoading || updateEquipment.isLoading;
+  const isSavingStatus = updateEquipmentStatus.isLoading;
+  const isDeletingEquipment = deleteEquipment.isLoading;
 
   // A tabela espera receber o nome da localização, não apenas o ID.
   const visibleEquipment = equipments.map((equipment) =>
     withLocationName(equipment, locationOptions),
-  )
-  const summaryCards = buildSummaryCards(summary)
+  );
+  const summaryCards = buildSummaryCards(summary);
 
   // Ações simples de navegação e abertura de modais.
   function handleViewEquipment(equipment: Equipment) {
-    navigate(`/equipment/${equipment.id}`)
+    navigate(`/equipment/${equipment.id}`);
   }
 
   function handleCreateEquipment() {
@@ -211,37 +215,56 @@ export function EquipmentPage() {
 
   // O mesmo modal serve para criar e editar. O formMode decide qual chamada será feita.
   async function handleSubmitFormModal(values: EquipmentFormValues) {
-    const payload = buildEquipmentPayload(values)
+    const payload = buildEquipmentPayload(values);
 
     try {
-      if (formMode === 'edit' && equipmentInForm) {
+      if (formMode === "edit" && equipmentInForm) {
         await updateEquipment.update({
           equipmentId: equipmentInForm.id,
           payload,
-        })
-        messageApi.success('Equipamento atualizado com sucesso.')
+        });
+        messageApi.success("Equipamento atualizado com sucesso.");
       } else {
-        await createEquipment.create(payload)
-        messageApi.success('Equipamento cadastrado com sucesso.')
+        await createEquipment.create(payload);
+        messageApi.success("Equipamento cadastrado com sucesso.");
       }
 
-      await Promise.all([equipmentListQuery.reload(), equipmentSummaryQuery.reload()])
-      handleCloseFormModal()
+      await Promise.all([
+        equipmentListQuery.reload(),
+        equipmentSummaryQuery.reload(),
+      ]);
+      handleCloseFormModal();
     } catch (error) {
-      messageApi.error(getRequestErrorMessage(error))
+      messageApi.error(getRequestErrorMessage(error));
     }
   }
 
-  function handleConfirmRemoveEquipment() {
-    // TODO Aula futura: conectar DELETE /equipment/:equipmentId se o escopo incluir exclusão.
-    messageApi.info('Exclusão deixada como evolução após a integração principal.')
-    setEquipmentToRemove(undefined)
+  async function handleConfirmRemoveEquipment() {
+    if (!equipmentToRemove) {
+      return;
+    }
+
+    try {
+      await deleteEquipment.delete(equipmentToRemove.id);
+      messageApi.success("Equipamento excluído com sucesso.");
+      setEquipmentToRemove(undefined);
+
+      if (currentPage > 1 && equipments.length === 1) {
+        setCurrentPage((page) => Math.max(1, page - 1));
+        await equipmentSummaryQuery.reload();
+        return;
+      }
+
+      await Promise.all([equipmentListQuery.reload(), equipmentSummaryQuery.reload()])
+    } catch (error) {
+      messageApi.error(getRequestErrorMessage(error));
+    }
   }
 
   // Alterar status é uma ação menor, por isso usa um modal separado do formulário completo.
   async function handleSubmitStatusModal(values: EquipmentStatusFormValues) {
     if (!equipmentInStatus) {
-      return
+      return;
     }
 
     try {
@@ -251,42 +274,45 @@ export function EquipmentPage() {
           status: values.status,
           note: values.note?.trim() || null,
         },
-      })
+      });
 
-      await Promise.all([equipmentListQuery.reload(), equipmentSummaryQuery.reload()])
-      messageApi.success('Status atualizado com sucesso.')
-      setEquipmentInStatus(undefined)
+      await Promise.all([
+        equipmentListQuery.reload(),
+        equipmentSummaryQuery.reload(),
+      ]);
+      messageApi.success("Status atualizado com sucesso.");
+      setEquipmentInStatus(undefined);
     } catch (error) {
-      messageApi.error(getRequestErrorMessage(error))
+      messageApi.error(getRequestErrorMessage(error));
     }
   }
 
   // Quando filtros mudam, voltamos para a primeira página para evitar páginas vazias.
   function handleClearFilters() {
-    setSearchText('')
-    setDebouncedSearchText('')
-    setSelectedStatus(undefined)
-    setSelectedType(undefined)
-    setCurrentPage(1)
+    setSearchText("");
+    setDebouncedSearchText("");
+    setSelectedStatus(undefined);
+    setSelectedType(undefined);
+    setCurrentPage(1);
   }
 
   function handleSearchChange(value: string) {
-    setSearchText(value)
+    setSearchText(value);
   }
 
   function handleStatusChange(value?: EquipmentStatus) {
-    setSelectedStatus(value)
-    setCurrentPage(1)
+    setSelectedStatus(value);
+    setCurrentPage(1);
   }
 
   function handleTypeChange(value?: EquipmentType) {
-    setSelectedType(value)
-    setCurrentPage(1)
+    setSelectedType(value);
+    setCurrentPage(1);
   }
 
   function handlePageChange(nextPage: number, nextPageSize: number) {
-    setCurrentPage(nextPage)
-    setPageSize(nextPageSize)
+    setCurrentPage(nextPage);
+    setPageSize(nextPageSize);
   }
 
   return (
@@ -370,6 +396,7 @@ export function EquipmentPage() {
 
         {/* Exclusão ainda é visual nesta aula; o DELETE fica como evolução. */}
         <EquipmentRemoveModal
+          confirmLoading={isDeletingEquipment}
           equipment={equipmentToRemove}
           open={Boolean(equipmentToRemove)}
           onCancel={() => setEquipmentToRemove(undefined)}

@@ -1,22 +1,22 @@
-import { Alert, App as AntDesignApp, Spin } from 'antd'
-import { useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { AppLayout } from '../../../../app/layout/AppLayout'
-import { DetailSummaryCards } from '../../components/DetailSummaryCards'
-import { DetailsHeader } from '../../components/DetailsHeader'
-import { EquipmentFormModal } from '../../components/EquipmentFormModal'
-import type { EquipmentFormValues } from '../../components/EquipmentFormModal'
-import { EquipmentHistoryCard } from '../../components/EquipmentHistoryCard'
-import { EquipmentInfoCard } from '../../components/EquipmentInfoCard'
-import { EquipmentNotesCard } from '../../components/EquipmentNotesCard'
-import { EquipmentRemoveModal } from '../../components/EquipmentRemoveModal'
-import { EquipmentStatusModal } from '../../components/EquipmentStatusModal'
-import type { EquipmentStatusFormValues } from '../../components/EquipmentStatusModal'
-import { getRequestErrorMessage } from '../../hooks/getRequestErrorMessage'
-import { useEquipmentDetails } from '../../hooks/useEquipmentDetails'
-import { useEquipmentLocationOptions } from '../../hooks/useEquipmentLocationOptions'
-import { useUpdateEquipment } from '../../hooks/useUpdateEquipment'
-import { useUpdateEquipmentStatus } from '../../hooks/useUpdateEquipmentStatus'
+import { Alert, App as AntDesignApp, Spin } from "antd";
+import { useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { AppLayout } from "../../../../app/layout/AppLayout";
+import { DetailSummaryCards } from "../../components/DetailSummaryCards";
+import { DetailsHeader } from "../../components/DetailsHeader";
+import { EquipmentFormModal } from "../../components/EquipmentFormModal";
+import type { EquipmentFormValues } from "../../components/EquipmentFormModal";
+import { EquipmentHistoryCard } from "../../components/EquipmentHistoryCard";
+import { EquipmentInfoCard } from "../../components/EquipmentInfoCard";
+import { EquipmentNotesCard } from "../../components/EquipmentNotesCard";
+import { EquipmentRemoveModal } from "../../components/EquipmentRemoveModal";
+import { EquipmentStatusModal } from "../../components/EquipmentStatusModal";
+import type { EquipmentStatusFormValues } from "../../components/EquipmentStatusModal";
+import { getRequestErrorMessage } from "../../hooks/getRequestErrorMessage";
+import { useEquipmentDetails } from "../../hooks/useEquipmentDetails";
+import { useEquipmentLocationOptions } from "../../hooks/useEquipmentLocationOptions";
+import { useUpdateEquipment } from "../../hooks/useUpdateEquipment";
+import { useUpdateEquipmentStatus } from "../../hooks/useUpdateEquipmentStatus";
 import {
   formatEquipmentDate,
   getEquipmentStatusLabel,
@@ -26,7 +26,7 @@ import {
   type EquipmentDetail,
   type EquipmentDetailSummary,
   type EquipmentLocationOption,
-} from '../../types/equipment'
+} from "../../types/equipment";
 
 import {
   Container,
@@ -34,10 +34,13 @@ import {
   MainColumn,
   SideColumn,
   StarterBox,
-} from './styles'
+} from "./styles";
+import { useDeleteEquipment } from "../../hooks/useDeleteEquipment";
 
 // Antes de enviar para a API, limpamos espaços e transformamos campos vazios em undefined/null.
-function buildEquipmentPayload(values: EquipmentFormValues): CreateEquipmentPayload {
+function buildEquipmentPayload(
+  values: EquipmentFormValues,
+): CreateEquipmentPayload {
   return {
     name: values.name.trim(),
     type: values.type,
@@ -47,37 +50,42 @@ function buildEquipmentPayload(values: EquipmentFormValues): CreateEquipmentPayl
     locationId: values.locationId ?? null,
     responsibleUserName: values.responsibleUserName?.trim() || null,
     notes: values.notes?.trim() || null,
-  }
+  };
 }
 
 // A API devolve os dados completos; esta função escolhe o que vira card de resumo.
-function buildDetailSummary(equipment: EquipmentDetail): EquipmentDetailSummary[] {
+function buildDetailSummary(
+  equipment: EquipmentDetail,
+): EquipmentDetailSummary[] {
   return [
     {
-      id: 'status',
-      title: 'Status',
+      id: "status",
+      title: "Status",
       value: getEquipmentStatusLabel(equipment.status),
-      description: equipment.status === 'AVAILABLE' ? 'Pronto para uso' : 'Acompanha restrição',
+      description:
+        equipment.status === "AVAILABLE"
+          ? "Pronto para uso"
+          : "Acompanha restrição",
     },
     {
-      id: 'location',
-      title: 'Localização',
-      value: equipment.locationName ?? 'Sem localização',
-      description: 'Setor atual',
+      id: "location",
+      title: "Localização",
+      value: equipment.locationName ?? "Sem localização",
+      description: "Setor atual",
     },
     {
-      id: 'responsible',
-      title: 'Responsável',
-      value: equipment.responsibleUserName ?? 'Equipe de patrimônio',
-      description: 'Pessoa de referência',
+      id: "responsible",
+      title: "Responsável",
+      value: equipment.responsibleUserName ?? "Equipe de patrimônio",
+      description: "Pessoa de referência",
     },
     {
-      id: 'updatedAt',
-      title: 'Atualizado',
+      id: "updatedAt",
+      title: "Atualizado",
       value: formatEquipmentDate(equipment.updatedAt),
-      description: 'Última alteração',
+      description: "Última alteração",
     },
-  ]
+  ];
 }
 
 // O detalhe vem com locationId. Aqui adicionamos o nome da localização para a tela.
@@ -87,39 +95,41 @@ function withLocationName(
 ): EquipmentDetail {
   const locationLabelById = new Map(
     locationOptions.map((location) => [location.id, location.label]),
-  )
+  );
 
   return {
     ...equipment,
     locationName: equipment.locationId
-      ? locationLabelById.get(equipment.locationId) ?? 'Localização não encontrada'
-      : 'Sem localização',
-  }
+      ? (locationLabelById.get(equipment.locationId) ??
+        "Localização não encontrada")
+      : "Sem localização",
+  };
 }
 
 export function EquipmentDetailsPage() {
-  const { message: messageApi } = AntDesignApp.useApp()
-  const navigate = useNavigate()
+  const { message: messageApi } = AntDesignApp.useApp();
+  const navigate = useNavigate();
 
   // O ID vem da URL /equipment/:equipmentId e decide qual equipamento buscar.
-  const { equipmentId } = useParams()
+  const { equipmentId } = useParams();
 
   // Estes estados controlam apenas os modais da página de detalhes.
-  const [equipmentInForm, setEquipmentInForm] = useState<EquipmentDetail>()
-  const [equipmentInStatus, setEquipmentInStatus] = useState<EquipmentDetail>()
-  const [equipmentToRemove, setEquipmentToRemove] = useState<EquipmentDetail>()
+  const [equipmentInForm, setEquipmentInForm] = useState<EquipmentDetail>();
+  const [equipmentInStatus, setEquipmentInStatus] = useState<EquipmentDetail>();
+  const [equipmentToDelete, setEquipmentToDelete] = useState<EquipmentDetail>();
 
   // Hooks que usam useEffect + axios para buscar e salvar dados na API.
-  const equipmentQuery = useEquipmentDetails(equipmentId)
-  const locationOptionsQuery = useEquipmentLocationOptions()
-  const updateEquipment = useUpdateEquipment()
-  const updateEquipmentStatus = useUpdateEquipmentStatus()
+  const equipmentQuery = useEquipmentDetails(equipmentId);
+  const locationOptionsQuery = useEquipmentLocationOptions();
+  const updateEquipment = useUpdateEquipment();
+  const updateEquipmentStatus = useUpdateEquipmentStatus();
+  const deleteEquipment = useDeleteEquipment();
 
   // Garante que a tela sempre tenha uma lista de localizações, mesmo antes da API responder.
   const locationOptions = useMemo(
     () => locationOptionsQuery.data ?? [],
     [locationOptionsQuery.data],
-  )
+  );
 
   // Junta os dados do equipamento com o nome da localização antes de renderizar.
   const equipment = useMemo(
@@ -128,60 +138,61 @@ export function EquipmentDetailsPage() {
         ? withLocationName(equipmentQuery.data, locationOptions)
         : undefined,
     [equipmentQuery.data, locationOptions],
-  )
+  );
 
   // Loading e erro combinam as duas buscas necessárias para montar o detalhe.
-  const isLoading = equipmentQuery.isLoading || locationOptionsQuery.isLoading
+  const isLoading = equipmentQuery.isLoading || locationOptionsQuery.isLoading;
   const loadError =
-    (!equipmentId ? 'ID do equipamento não encontrado na rota.' : '') ||
+    (!equipmentId ? "ID do equipamento não encontrado na rota." : "") ||
     equipmentQuery.errorMessage ||
-    locationOptionsQuery.errorMessage
-  const isSavingForm = updateEquipment.isLoading
-  const isSavingStatus = updateEquipmentStatus.isLoading
+    locationOptionsQuery.errorMessage;
+  const isSavingForm = updateEquipment.isLoading;
+  const isSavingStatus = updateEquipmentStatus.isLoading;
+  const isDeletingEquipment = deleteEquipment.isLoading;
 
   // Cards de resumo são derivados do equipamento carregado.
   const summaries = useMemo(
     () => (equipment ? buildDetailSummary(equipment) : []),
     [equipment],
-  )
+  );
 
   // Abre o modal de edição usando o equipamento já carregado.
   function handleEditEquipment() {
     if (equipment) {
-      setEquipmentInForm(equipment)
+      setEquipmentInForm(equipment);
     }
   }
 
   // Abre o modal de alteração de status usando o equipamento já carregado.
   function handleChangeStatus() {
     if (equipment) {
-      setEquipmentInStatus(equipment)
+      setEquipmentInStatus(equipment);
     }
   }
 
   // Salva a edição e depois recarrega o detalhe para mostrar os dados atualizados.
   async function handleSubmitFormModal(values: EquipmentFormValues) {
     if (!equipmentInForm) {
-      return
+      return;
     }
 
     try {
       await updateEquipment.update({
         equipmentId: equipmentInForm.id,
         payload: buildEquipmentPayload(values),
-      })
-      await equipmentQuery.reload()
-      messageApi.success('Equipamento atualizado com sucesso.')
-      setEquipmentInForm(undefined)
+      });
+      await equipmentQuery.reload();
+      messageApi.success("Equipamento atualizado com sucesso.");
+      setEquipmentInForm(undefined);
     } catch (error) {
-      messageApi.error(getRequestErrorMessage(error))
+      messageApi.error(getRequestErrorMessage(error));
     }
   }
 
   // Salva o novo status e depois recarrega o detalhe para atualizar cards e histórico.
   async function handleSubmitStatusModal(values: EquipmentStatusFormValues) {
     if (!equipmentInStatus) {
-      return
+      return;
     }
 
     try {
@@ -191,19 +202,28 @@ export function EquipmentDetailsPage() {
           status: values.status,
           note: values.note?.trim() || null,
         },
-      })
-      await equipmentQuery.reload()
-      messageApi.success('Status atualizado com sucesso.')
-      setEquipmentInStatus(undefined)
+      });
+      await equipmentQuery.reload();
+      messageApi.success("Status atualizado com sucesso.");
+      setEquipmentInStatus(undefined);
     } catch (error) {
-      messageApi.error(getRequestErrorMessage(error))
+      messageApi.error(getRequestErrorMessage(error));
     }
   }
 
-  function handleConfirmRemoveEquipment() {
-    // TODO Aula futura: conectar DELETE /equipment/:equipmentId se o escopo incluir exclusão.
-    messageApi.info('Exclusão deixada como evolução após a integração principal.')
-    setEquipmentToRemove(undefined)
+  async function handleConfirmRemoveEquipment() {
+    if (!equipmentToDelete) {
+      return;
+    }
+
+    try {
+      await deleteEquipment.delete(equipmentToDelete.id);
+      messageApi.success("Equipamento excluido com sucesso.");
+      setEquipmentToDelete(undefined);
+      navigate("/equipment");
+    } catch (error) {
+      messageApi.error(getRequestErrorMessage(error));
+    }
   }
 
   // Enquanto o detalhe ou as localizações carregam, mostramos um estado simples de espera.
@@ -216,7 +236,7 @@ export function EquipmentDetailsPage() {
           </StarterBox>
         </Container>
       </AppLayout>
-    )
+    );
   }
 
   // Se a API falhar ou o equipamento não existir, mostramos uma mensagem de erro didática.
@@ -227,12 +247,14 @@ export function EquipmentDetailsPage() {
           <Alert
             showIcon
             message="Equipamento não encontrado"
-            description={loadError || 'Não foi possível exibir este equipamento.'}
+            description={
+              loadError || "Não foi possível exibir este equipamento."
+            }
             type="error"
           />
         </Container>
       </AppLayout>
-    )
+    );
   }
 
   return (
@@ -241,10 +263,10 @@ export function EquipmentDetailsPage() {
         {/* Cabeçalho com ações principais: voltar, editar, status e excluir. */}
         <DetailsHeader
           equipment={equipment}
-          onBack={() => navigate('/equipment')}
+          onBack={() => navigate("/equipment")}
           onChangeStatus={handleChangeStatus}
           onEdit={handleEditEquipment}
-          onRemove={() => setEquipmentToRemove(equipment)}
+          onRemove={() => setEquipmentToDelete(equipment)}
         />
 
         {/* Cards calculados a partir do equipamento carregado pela API. */}
@@ -287,12 +309,13 @@ export function EquipmentDetailsPage() {
 
         {/* Exclusão ainda é visual nesta aula; o DELETE fica como evolução. */}
         <EquipmentRemoveModal
-          equipment={equipmentToRemove}
-          open={Boolean(equipmentToRemove)}
-          onCancel={() => setEquipmentToRemove(undefined)}
+          confirmLoading={isDeletingEquipment}
+          equipment={equipmentToDelete}
+          open={Boolean(equipmentToDelete)}
+          onCancel={() => setEquipmentToDelete(undefined)}
           onConfirm={handleConfirmRemoveEquipment}
         />
       </Container>
     </AppLayout>
-  )
+  );
 }
