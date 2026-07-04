@@ -16,4 +16,5 @@ export const HeaderContainer = styled(Layout.Header)`
 export const PageBreadcrumb = styled(Breadcrumb)`
   padding-left: 8px;
   border-left: 1px solid #dde6ee;
+  color: #434751;
 `

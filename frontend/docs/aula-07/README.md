@@ -1,0 +1,555 @@
+# Aula 07 - Integração Frontend + Backend
+
+Nesta aula vamos conectar as telas de Equipamentos do frontend com a API do backend.
+
+A ideia principal é trocar dados mockados por dados reais vindos das rotas HTTP, sem mudar a arquitetura visual que já foi construída nas aulas anteriores.
+
+## Objetivo da aula
+
+Ao final da aula, você deve entender o fluxo:
+
+```txt
+tela -> service -> API -> service -> estado React -> componentes
+```
+
+Também deve conseguir repetir esse padrão no Projeto Final, implementando o módulo de Localizações.
+
+## O que será integrado
+
+- Listagem geral de equipamentos;
+- cards de resumo dos equipamentos;
+- tela de detalhes de um equipamento;
+- modal de criação;
+- modal de edição;
+- alteração de status;
+- estados de loading, erro e lista vazia.
+
+A exclusão não será o foco desta aula. Ela fica como evolução futura para não misturar muitos fluxos ao mesmo tempo.
+
+## Pré-requisitos
+
+- Node.js LTS instalado;
+- npm instalado;
+- Docker Desktop instalado;
+- dependencias do frontend instaladas com `npm install`;
+- noção básica de componentes, props, estado e rotas do React.
+
+## Como rodar a aula
+
+Nesta aula, o caminho principal e rodar tudo a partir do frontend.
+
+Entre na pasta do frontend:
+
+```bash
+cd frontend
+```
+
+Instale as dependencias, se necessario:
+
+```bash
+npm install
+```
+
+Rode:
+
+```bash
+npm run dev
+```
+
+Esse comando faz mais do que abrir o Vite:
+
+- verifica/cria a configuracao local do backend;
+- configura `backend/.env` com `DATABASE_URL`;
+- sobe o PostgreSQL com Docker Compose;
+- espera o banco ficar pronto;
+- inicia a API;
+- cria/atualiza `frontend/.env`;
+- inicia o frontend.
+
+Os logs aparecem no mesmo terminal com tags coloridas:
+
+```txt
+[backend] verde: logs da API
+[frontend] azul: logs do Vite
+[dev] ciano: mensagens do script que prepara o ambiente
+```
+
+Se o Docker Desktop estiver fechado, o script tenta abrir. Se ele nao conseguir iniciar a tempo, abra o Docker Desktop manualmente e rode o comando de novo.
+
+Abra:
+
+```txt
+http://localhost:5173/equipment
+```
+
+Enderecos esperados:
+
+```txt
+Frontend: http://localhost:5173/equipment
+API:      http://localhost:3000/api/v1
+Swagger:  http://localhost:3000/docs
+Health:   http://localhost:3000/health
+```
+
+Se a porta `3000` estiver ocupada, o script escolhe outra porta para a API e atualiza o proxy do frontend.
+
+## Como rodar o backend manualmente
+
+Se precisar demonstrar o backend separado, entre na pasta do backend:
+
+```bash
+cd backend
+```
+
+Use o script simplificado:
+
+```bash
+./start.sh
+```
+
+No Windows, use:
+
+```bat
+start.bat
+```
+
+Ou rode manualmente:
+
+```bash
+npm install
+cp .env.example .env
+npm run db:up
+npm run dev
+```
+
+## Como rodar apenas o frontend
+
+Normalmente voce nao precisa deste comando na aula. Use apenas se a API ja estiver rodando.
+
+```bash
+cd frontend
+npm run dev:vite
+```
+
+## Variáveis de ambiente do frontend
+
+Arquivo:
+
+```txt
+frontend/.env
+```
+
+Conteudo esperado:
+
+```env
+VITE_API_URL=/api/v1
+VITE_API_PROXY_TARGET=http://localhost:3000
+```
+
+O `VITE_API_URL` é a URL usada pelo frontend para chamar a API.
+
+Nesta aula usamos `/api/v1`, porque o Vite encaminha essa chamada para o backend por meio do proxy configurado em:
+
+```txt
+frontend/vite.config.ts
+```
+
+Na maioria dos casos, os alunos nao precisam editar esse arquivo manualmente. O `npm run dev` atualiza `VITE_API_PROXY_TARGET` quando a API precisa subir em outra porta.
+
+Se estiver rodando tudo manualmente e o backend estiver em outra porta, ajuste:
+
+```env
+VITE_API_PROXY_TARGET=http://localhost:3001
+```
+
+## O que é integração com API?
+
+Até agora, a tela usava mocks: dados escritos dentro do próprio frontend.
+
+Na integração com API, o frontend deixa de inventar os dados e passa a pedir informações ao backend.
+
+Ponto de partida da branch:
+
+- `api.ts` começa com a instância do Axios comentada;
+- `equipmentService.ts` começa com um placeholder vazio para compilar;
+- o bloco real do service com Axios fica comentado no final do arquivo;
+- hooks, páginas e componentes ficam ativos para a turma conferir o fluxo.
+
+Exemplo:
+
+```txt
+GET /api/v1/equipment
+```
+
+Esse `GET` pede a lista de equipamentos. A API responde com JSON, o hook guarda a resposta em estado React e a tela renderiza a tabela.
+
+## Diagramas para explicar
+
+### Estrutura do backend Node
+
+```mermaid
+flowchart TB
+  Server["server.ts\ninicia o servidor HTTP"] --> App["app.ts\nconfigura Express, rotas e middlewares"]
+  App --> Equipment["features/equipment"]
+  App --> Locations["features/locations"]
+  App --> History["features/history"]
+
+  Equipment --> EquipmentRoutes["routes\nendpoints da feature"]
+  EquipmentRoutes --> EquipmentSchemas["schemas\nvalidacao da entrada"]
+  EquipmentRoutes --> EquipmentController["controller\ntraduz HTTP para regra de negocio"]
+  EquipmentController --> EquipmentService["service\nregras da aplicacao"]
+  EquipmentService --> EquipmentRepository["repository\nacesso aos dados"]
+
+  Locations --> LocationRoutes["routes"]
+  LocationRoutes --> LocationController["controller"]
+  LocationController --> LocationService["service"]
+  LocationService --> LocationRepository["repository"]
+
+  History --> HistoryService["service"]
+  HistoryService --> HistoryRepository["repository"]
+
+  EquipmentRepository --> Database[("PostgreSQL")]
+  LocationRepository --> Database
+  HistoryRepository --> Database
+
+  Shared["shared\nerrors, database, http, middlewares, pagination"] -.-> App
+  Shared -.-> Equipment
+  Shared -.-> Locations
+  Shared -.-> History
+```
+
+Leitura rápida:
+
+- `server.ts` sobe a API;
+- `app.ts` monta o Express e registra as rotas;
+- cada feature separa rota, validação, controller, service e repository;
+- `shared` guarda peças comuns usadas por várias features.
+
+### Fluxo de comunicação frontend e backend
+
+```mermaid
+sequenceDiagram
+  participant User as Usuario
+  participant Page as Pagina React
+  participant Hook as Hook useState/useEffect
+  participant Service as equipmentService
+  participant Axios as axiosApi
+  participant Api as API Express
+  participant Repo as Repository
+  participant DB as PostgreSQL
+
+  User->>Page: abre a tela ou altera filtro
+  Page->>Hook: atualiza estado da busca/paginacao
+  Hook->>Service: chama getEquipmentList(params)
+  Service->>Axios: axiosApi.get('/equipment')
+  Axios->>Api: GET /api/v1/equipment
+  Api->>Repo: busca dados paginados
+  Repo->>DB: consulta equipamentos
+  DB-->>Repo: linhas encontradas
+  Repo-->>Api: data + meta
+  Api-->>Axios: JSON da resposta
+  Axios-->>Service: response.data
+  Service-->>Hook: lista pronta para a tela
+  Hook-->>Page: setData, setIsLoading, setErrorMessage
+  Page-->>User: renderiza tabela, cards, loading ou erro
+```
+
+Leitura rápida:
+
+- a página não chama a API diretamente;
+- o hook controla estado, loading e erro;
+- o service centraliza URLs e métodos HTTP;
+- o backend valida, aplica regras e busca os dados no banco;
+- a resposta volta como JSON e a tela renderiza.
+
+### Camadas do frontend nesta aula
+
+```mermaid
+flowchart LR
+  Page["Page\nEquipmentPage"] --> Hook["Hooks\nuseState + useEffect"]
+  Hook --> Service["Service\nequipmentService"]
+  Service --> Axios["API base\naxiosApi"]
+  Axios --> Backend["Backend\n/api/v1"]
+
+  Page --> Components["Components\nTable, Filters, Modals, Cards"]
+  Types["Types\nEquipment, Payloads, Status"] -.-> Page
+  Types -.-> Hook
+  Types -.-> Service
+```
+
+Leitura rápida:
+
+- a página coordena estado e eventos;
+- os hooks concentram loading, erro e chamadas;
+- o service conversa com o backend via `axiosApi`;
+- os componentes recebem dados por props;
+- os types ajudam a manter o contrato entre tela e API.
+
+### Ciclo dos hooks com API
+
+```mermaid
+stateDiagram-v2
+  [*] --> Carregando: useEffect chama load
+  Carregando --> Sucesso: API respondeu
+  Carregando --> Erro: API falhou
+  Sucesso --> Carregando: filtro, pagina ou reload
+  Erro --> Carregando: tentar novamente
+```
+
+Leitura rápida:
+
+- o hook começa carregando dados;
+- se a API responder, guarda os dados no estado;
+- se a API falhar, guarda uma mensagem de erro;
+- filtros, paginação e `reload` podem iniciar uma nova busca.
+
+## Vocabulário para explicar em sala
+
+Função assíncrona:
+
+- `async` permite usar `await`;
+- `await` espera a resposta da API antes de continuar;
+- a aplicação não fica travada enquanto espera.
+
+Instância:
+
+- uma instância é uma versão configurada de uma ferramenta;
+- `axiosApi` é uma instância do Axios;
+- ela já sabe a URL base da API, então os services ficam mais curtos.
+
+useEffect:
+
+- roda depois que o componente aparece na tela;
+- serve para sincronizar o componente com algo externo, como uma API;
+- o array de dependências controla quando ele roda de novo.
+
+useCallback:
+
+- guarda uma função entre renderizações;
+- ajuda quando essa função entra no array de dependências de um `useEffect`;
+- o array de dependências controla quando a função deve ser recriada.
+
+## Camadas usadas na integração
+
+### Service
+
+Arquivo:
+
+```txt
+frontend/src/features/equipment/services/equipmentService.ts
+```
+
+O service centraliza as chamadas para a API.
+
+Assim, a tela não precisa saber todos os detalhes de URL, método HTTP e tratamento básico de erro.
+
+Na aula, primeiro existe um placeholder vazio. Depois os alunos comentam/removem esse placeholder e descomentam o service real com `axiosApi`.
+
+### API base
+
+Arquivo:
+
+```txt
+frontend/src/services/api.ts
+```
+
+Aqui fica a instância `axiosApi`, criada com `axios.create`.
+
+Ela guarda a URL base para as chamadas do service ficarem curtas e legíveis.
+
+No ponto de partida, esse conteúdo está comentado para ser descomentado junto com a turma.
+
+### Hooks
+
+Arquivos:
+
+```txt
+frontend/src/features/equipment/hooks/useEquipmentList.ts
+frontend/src/features/equipment/hooks/useEquipmentSummary.ts
+frontend/src/features/equipment/hooks/useEquipmentDetails.ts
+frontend/src/features/equipment/hooks/useEquipmentLocationOptions.ts
+frontend/src/features/equipment/hooks/useCreateEquipment.ts
+frontend/src/features/equipment/hooks/useUpdateEquipment.ts
+frontend/src/features/equipment/hooks/useUpdateEquipmentStatus.ts
+```
+
+Cada hook fica em um arquivo com o mesmo nome dele.
+
+Aqui ficam hooks com `useState` e `useEffect`.
+
+Eles controlam loading, erro, dados recebidos da API e atualização manual depois de criar, editar ou alterar status.
+
+### Types
+
+Arquivo:
+
+```txt
+frontend/src/features/equipment/types/equipment.ts
+```
+
+Os tipos descrevem o formato dos dados.
+
+Exemplo:
+
+```txt
+Equipment
+CreateEquipmentPayload
+UpdateEquipmentPayload
+EquipmentStatus
+EquipmentType
+```
+
+Eles ajudam o editor e o TypeScript a avisarem quando tentamos enviar ou ler um campo errado.
+
+### Componentes
+
+Os componentes continuam responsáveis pela interface:
+
+```txt
+EquipmentTable
+EquipmentFormModal
+EquipmentStatusModal
+DetailsHeader
+EquipmentInfoCard
+EquipmentHistoryCard
+```
+
+A página busca os dados e passa tudo para os componentes por props.
+
+## Fluxo da aula passo a passo
+
+1. Rodar backend e frontend;
+2. conferir Swagger e rotas da API;
+3. configurar `.env` do frontend;
+4. abrir `api.ts`;
+5. abrir `equipmentService.ts`;
+6. integrar listagem;
+7. integrar tela de detalhes;
+8. integrar criação;
+9. integrar edição;
+10. integrar alteração de status;
+11. discutir como repetir o padrão em Localizações.
+
+## Integração da listagem
+
+Arquivos principais:
+
+```txt
+frontend/src/features/equipment/pages/EquipmentPage/index.tsx
+frontend/src/features/equipment/components/EquipmentTable/index.tsx
+frontend/src/features/equipment/services/equipmentService.ts
+```
+
+Passos:
+
+1. A página chama `equipmentService.getEquipmentList()`;
+2. o service faz `GET /equipment` com `page` e `pageSize`;
+3. a API retorna `{ data, meta }`;
+4. a página usa `data` para montar as linhas;
+5. a página usa `meta.total` para configurar a paginação;
+6. a tabela recebe `equipments` e `pagination` por props;
+7. enquanto carrega, a tabela mostra loading;
+8. se der erro, aparece uma mensagem simples;
+9. se a lista vier vazia, aparece o estado vazio.
+
+## Integração do detalhe
+
+Arquivo:
+
+```txt
+frontend/src/features/equipment/pages/EquipmentDetailsPage/index.tsx
+```
+
+Passos:
+
+1. A rota recebe `equipmentId`;
+2. a página lê o ID com `useParams`;
+3. a página chama `equipmentService.getEquipmentById(equipmentId)`;
+4. o service faz `GET /equipment/:equipmentId`;
+5. a tela mostra loading enquanto espera;
+6. se encontrar, renderiza cabeçalho, resumo, informações, observações e histórico;
+7. se não encontrar, mostra erro simples.
+
+## Integração do modal de criação
+
+Arquivos:
+
+```txt
+frontend/src/features/equipment/components/EquipmentFormModal/index.tsx
+frontend/src/features/equipment/pages/EquipmentPage/index.tsx
+```
+
+Passos:
+
+1. O usuário preenche o formulário;
+2. o Ant Design valida os campos obrigatórios;
+3. o modal devolve os valores para a página;
+4. a página monta o `CreateEquipmentPayload`;
+5. o service faz `POST /equipment`;
+6. após sucesso, a modal fecha;
+7. a página recarrega a listagem;
+8. a tela mostra feedback de sucesso.
+
+Fluxo:
+
+```txt
+formulário -> payload -> service -> API -> atualização da tela
+```
+
+## Integração do modal de edição
+
+Passos:
+
+1. O usuário escolhe `Editar`;
+2. a página guarda o equipamento selecionado;
+3. o modal abre preenchido com os dados atuais;
+4. o usuário altera os campos;
+5. a página monta o `UpdateEquipmentPayload`;
+6. o service faz `PUT /equipment/:equipmentId`;
+7. a listagem ou detalhe é recarregado após sucesso.
+
+## Integração da alteração de status
+
+Passos:
+
+1. O usuário escolhe `Alterar status`;
+2. o modal abre com o status atual;
+3. o usuário escolhe um novo status;
+4. a página monta `{ status, note }`;
+5. o service faz `PATCH /equipment/:equipmentId/status`;
+6. a tela bloqueia clique duplicado usando loading no botão;
+7. a listagem ou detalhe é recarregado após sucesso.
+
+## Preparação para o Projeto Final: Localizações
+
+No projeto final, você deverá repetir o padrão de Equipamentos no módulo de Localizações.
+
+Você não deve copiar e colar sem entender. Use Equipamentos como referência de arquitetura:
+
+```txt
+types -> service -> page -> components -> loading/erro/vazio
+```
+
+## Atividade prática para entrega
+
+Implemente o módulo de Localizações seguindo o mesmo padrão usado em Equipamentos.
+
+Requisitos mínimos:
+
+- criar tipos de Localizações compatíveis com a API;
+- criar service de Localizações;
+- integrar listagem de localizações;
+- integrar detalhe de uma localização;
+- criar modal de criação;
+- criar modal de edição;
+- integrar alteração de status, se existir no backend;
+- exibir loading;
+- exibir erro simples;
+- exibir estado vazio;
+- preservar layout e organização do projeto.
+
+Entrega sugerida:
+
+- código no repositório;
+- prints da listagem, detalhe, criação, edição e alteração de status;
+- breve explicação do fluxo usado.

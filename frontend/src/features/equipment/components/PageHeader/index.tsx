@@ -1,4 +1,4 @@
-import AddCircleOutlineOutlined from '@mui/icons-material/AddCircleOutlineOutlined'
+import AddOutlined from '@mui/icons-material/AddOutlined'
 import { BrandButton, Container, Description, Title } from './styles'
 
 interface PageHeaderProps {
@@ -17,7 +17,7 @@ export function PageHeader({ onCreateEquipment }: PageHeaderProps) {
 
       <BrandButton
         type="primary"
-        icon={<AddCircleOutlineOutlined fontSize="small" />}
+        icon={<AddOutlined fontSize="small" />}
         onClick={onCreateEquipment}
       >
         Novo equipamento

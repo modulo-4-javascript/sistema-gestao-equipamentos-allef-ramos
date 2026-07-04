@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS equipment (
   serial_number varchar(80),
   status varchar(40) NOT NULL,
   location_id uuid REFERENCES locations(id) ON DELETE SET NULL,
-  responsible_user_id uuid,
+  responsible_user_name varchar(120),
   notes text,
   created_at timestamptz NOT NULL,
   updated_at timestamptz NOT NULL
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS equipment_history (
   to_location_id uuid REFERENCES locations(id) ON DELETE SET NULL,
   title varchar(160) NOT NULL,
   description text NOT NULL,
-  user_id uuid,
+  user_name varchar(120),
   created_at timestamptz NOT NULL
 );
 
@@ -60,6 +60,13 @@ export async function initializeDatabase(): Promise<void> {
 
   const pool = getPool();
   await pool.query(createTablesSql);
+  await pool.query(`
+    ALTER TABLE equipment
+      ADD COLUMN IF NOT EXISTS responsible_user_name varchar(120);
+
+    ALTER TABLE equipment_history
+      ADD COLUMN IF NOT EXISTS user_name varchar(120);
+  `);
   await seedLocations();
   await seedEquipment();
   await seedHistory();
@@ -75,7 +82,17 @@ async function seedLocations(): Promise<void> {
         id, code, name, type, building, floor, room, description, status, created_at, updated_at
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-      ON CONFLICT (id) DO NOTHING
+      ON CONFLICT (id) DO UPDATE
+      SET
+        code = EXCLUDED.code,
+        name = EXCLUDED.name,
+        type = EXCLUDED.type,
+        building = EXCLUDED.building,
+        floor = EXCLUDED.floor,
+        room = EXCLUDED.room,
+        description = EXCLUDED.description,
+        status = EXCLUDED.status,
+        updated_at = EXCLUDED.updated_at
       `,
       [
         location.id,
@@ -102,10 +119,21 @@ async function seedEquipment(): Promise<void> {
       `
       INSERT INTO equipment (
         id, code, name, type, model, serial_number, status, location_id,
-        responsible_user_id, notes, created_at, updated_at
+        responsible_user_name, notes, created_at, updated_at
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-      ON CONFLICT (id) DO NOTHING
+      ON CONFLICT (id) DO UPDATE
+      SET
+        code = EXCLUDED.code,
+        name = EXCLUDED.name,
+        type = EXCLUDED.type,
+        model = EXCLUDED.model,
+        serial_number = EXCLUDED.serial_number,
+        status = EXCLUDED.status,
+        location_id = EXCLUDED.location_id,
+        responsible_user_name = EXCLUDED.responsible_user_name,
+        notes = EXCLUDED.notes,
+        updated_at = EXCLUDED.updated_at
       `,
       [
         equipment.id,
@@ -116,7 +144,7 @@ async function seedEquipment(): Promise<void> {
         equipment.serialNumber ?? null,
         equipment.status,
         equipment.locationId ?? null,
-        equipment.responsibleUserId ?? null,
+        equipment.responsibleUserName ?? null,
         equipment.notes ?? null,
         equipment.createdAt,
         equipment.updatedAt
@@ -141,10 +169,19 @@ async function seedHistory(): Promise<void> {
       `
       INSERT INTO equipment_history (
         id, type, equipment_id, from_location_id, to_location_id, title, description,
-        user_id, created_at
+        user_name, created_at
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      ON CONFLICT (id) DO NOTHING
+      ON CONFLICT (id) DO UPDATE
+      SET
+        type = EXCLUDED.type,
+        equipment_id = EXCLUDED.equipment_id,
+        from_location_id = EXCLUDED.from_location_id,
+        to_location_id = EXCLUDED.to_location_id,
+        title = EXCLUDED.title,
+        description = EXCLUDED.description,
+        user_name = EXCLUDED.user_name,
+        created_at = EXCLUDED.created_at
       `,
       [
         history.id,
@@ -154,7 +191,7 @@ async function seedHistory(): Promise<void> {
         history.toLocationId ?? null,
         history.title,
         history.description,
-        history.userId ?? null,
+        history.userName ?? null,
         history.createdAt
       ]
     );
