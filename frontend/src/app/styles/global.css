@@ -15,3 +15,7 @@ textarea,
 select {
   font: inherit;
 }
+
+.ant-select:not(.filter),.ant-select-item:not(.filter-option) {
+  padding: 8px 11px !important;
+}

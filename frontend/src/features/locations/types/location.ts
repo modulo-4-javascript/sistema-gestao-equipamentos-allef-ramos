@@ -89,6 +89,13 @@ export type LocationEquipment = Equipment
 
 export type LocationHistoryItem = EquipmentHistoryItem
 
+export interface ResourceHistoryPreviewItem {
+  id: string
+  title: string
+  description?: string | null
+  createdAt: string
+}
+
 export const locationStatusOptions: LocationStatus[] = ['ACTIVE', 'INACTIVE']
 
 export const locationTypeOptions: LocationType[] = [

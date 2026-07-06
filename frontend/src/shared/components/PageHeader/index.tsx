@@ -1,4 +1,4 @@
-import AddCircleOutlineOutlined from '@mui/icons-material/AddCircleOutlineOutlined'
+import { AddOutlined } from '@mui/icons-material'
 import type { ReactNode } from 'react'
 import { BrandButton, Container, Description, Title } from './styles'
 
@@ -27,7 +27,7 @@ export function PageHeader({
       {actionLabel && onAction && (
         <BrandButton
           type="primary"
-          icon={actionIcon ?? <AddCircleOutlineOutlined fontSize="small" />}
+          icon={actionIcon ?? <AddOutlined fontSize="small" />}
           onClick={onAction}
         >
           {actionLabel}

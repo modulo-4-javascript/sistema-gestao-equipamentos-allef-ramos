@@ -1,27 +1,33 @@
-import SearchOutlined from '@mui/icons-material/SearchOutlined'
-import { Button, Input, Select } from 'antd'
-import { Field, FieldLabel, FilterCard, FiltersGrid } from './styles'
+import SearchOutlined from "@mui/icons-material/SearchOutlined";
+import { Button, Input, Select } from "antd";
+import { Field, FieldLabel, FilterCard, FiltersGrid } from "./styles";
 
-interface ResourceFiltersProps<StatusValue extends string, TypeValue extends string> {
-  searchText: string
-  selectedStatus?: StatusValue
-  selectedType?: TypeValue
-  statusOptions: StatusValue[]
-  typeOptions: TypeValue[]
-  getStatusLabel: (status: StatusValue) => string
-  getTypeLabel: (type: TypeValue) => string
-  searchLabel?: string
-  searchPlaceholder: string
-  statusLabel?: string
-  typeLabel?: string
-  typePlaceholder: string
-  onSearchChange: (value: string) => void
-  onStatusChange: (value?: StatusValue) => void
-  onTypeChange: (value?: TypeValue) => void
-  onClear: () => void
+interface ResourceFiltersProps<
+  StatusValue extends string,
+  TypeValue extends string,
+> {
+  searchText: string;
+  selectedStatus?: StatusValue;
+  selectedType?: TypeValue;
+  statusOptions: StatusValue[];
+  typeOptions: TypeValue[];
+  getStatusLabel: (status: StatusValue) => string;
+  getTypeLabel: (type: TypeValue) => string;
+  searchLabel?: string;
+  searchPlaceholder: string;
+  statusLabel?: string;
+  typeLabel?: string;
+  typePlaceholder: string;
+  onSearchChange: (value: string) => void;
+  onStatusChange: (value?: StatusValue) => void;
+  onTypeChange: (value?: TypeValue) => void;
+  onClear: () => void;
 }
 
-export function ResourceFilters<StatusValue extends string, TypeValue extends string>({
+export function ResourceFilters<
+  StatusValue extends string,
+  TypeValue extends string,
+>({
   searchText,
   selectedStatus,
   selectedType,
@@ -29,10 +35,10 @@ export function ResourceFilters<StatusValue extends string, TypeValue extends st
   typeOptions,
   getStatusLabel,
   getTypeLabel,
-  searchLabel = 'Busca',
+  searchLabel = "Busca",
   searchPlaceholder,
-  statusLabel = 'Status',
-  typeLabel = 'Tipo',
+  statusLabel = "Status",
+  typeLabel = "Tipo",
   typePlaceholder,
   onSearchChange,
   onStatusChange,
@@ -56,6 +62,7 @@ export function ResourceFilters<StatusValue extends string, TypeValue extends st
         <Field>
           <FieldLabel>{statusLabel}</FieldLabel>
           <Select
+            className="filter"
             allowClear
             placeholder="Todos"
             value={selectedStatus}
@@ -63,14 +70,16 @@ export function ResourceFilters<StatusValue extends string, TypeValue extends st
             options={statusOptions.map((status) => ({
               label: getStatusLabel(status),
               value: status,
+              className: "filter-option",
             }))}
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
           />
         </Field>
 
         <Field>
           <FieldLabel>{typeLabel}</FieldLabel>
           <Select
+            className="filter"
             allowClear
             placeholder={typePlaceholder}
             value={selectedType}
@@ -78,13 +87,14 @@ export function ResourceFilters<StatusValue extends string, TypeValue extends st
             options={typeOptions.map((type) => ({
               label: getTypeLabel(type),
               value: type,
+              className: "filter-option",
             }))}
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
           />
         </Field>
 
         <Button onClick={onClear}>Limpar filtros</Button>
       </FiltersGrid>
     </FilterCard>
-  )
+  );
 }

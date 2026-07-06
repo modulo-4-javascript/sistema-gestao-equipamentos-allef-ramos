@@ -9,6 +9,7 @@ interface DataTableProps<RecordData extends object> {
   loading?: boolean
   pagination?: TableProps<RecordData>['pagination']
   rowKey: TableProps<RecordData>['rowKey']
+  onRowDoubleClick?: (record: RecordData) => void
 }
 
 export function DataTable<RecordData extends object>({
@@ -18,6 +19,7 @@ export function DataTable<RecordData extends object>({
   loading,
   pagination,
   rowKey,
+  onRowDoubleClick,
 }: DataTableProps<RecordData>) {
   return (
     <TableCard styles={{ body: { padding: 0 } }}>
@@ -31,6 +33,9 @@ export function DataTable<RecordData extends object>({
         size="middle"
         tableLayout="fixed"
         scroll={{ x: 'max-content', y: 'clamp(280px, 42vh, 520px)' }}
+        onRow={(record) => ({
+          onDoubleClick: () => onRowDoubleClick?.(record),
+        })}
       />
     </TableCard>
   )
