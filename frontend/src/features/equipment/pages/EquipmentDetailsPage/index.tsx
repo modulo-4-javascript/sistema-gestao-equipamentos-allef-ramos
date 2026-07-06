@@ -8,7 +8,7 @@ import {
 } from '../../../../shared/components/DetailSummaryCards'
 import { DetailTextCard } from '../../../../shared/components/DetailTextCard'
 import { getRequestErrorMessage } from '../../../../shared/http/getRequestErrorMessage'
-import { DetailsHeader } from '../../components/DetailsHeader'
+import { EquipmentDetailsHeader } from '../../components/EquipmentDetailsHeader'
 import { EquipmentFormModal } from '../../components/EquipmentFormModal'
 import type { EquipmentFormValues } from '../../components/EquipmentFormModal'
 import { EquipmentHistoryCard } from '../../components/EquipmentHistoryCard'
@@ -253,7 +253,7 @@ export function EquipmentDetailsPage() {
     <AppLayout currentPage="Detalhes">
       <Container>
         {/* Cabeçalho com ações principais: voltar, editar, status e excluir. */}
-        <DetailsHeader
+        <EquipmentDetailsHeader
           equipment={equipment}
           onBack={() => navigate('/equipment')}
           onChangeStatus={handleChangeStatus}

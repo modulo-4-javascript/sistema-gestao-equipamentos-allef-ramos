@@ -19,7 +19,7 @@ import {
   getEquipmentTypeLabel,
   type Equipment,
 } from '../../types/equipment'
-import { StatusBadge } from '../StatusBadge'
+import { EquipmentStatusBadge } from '../EquipmentStatusBadge'
 
 interface EquipmentTableProps {
   equipments: Equipment[]
@@ -78,7 +78,7 @@ function getColumns({
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status: Equipment['status']) => <StatusBadge status={status} />,
+      render: (status: Equipment['status']) => <EquipmentStatusBadge status={status} />,
     },
     {
       title: 'Localização',

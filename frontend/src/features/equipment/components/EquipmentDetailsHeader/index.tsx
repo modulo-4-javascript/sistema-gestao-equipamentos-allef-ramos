@@ -4,9 +4,9 @@ import DeleteOutlineOutlined from '@mui/icons-material/DeleteOutlineOutlined'
 import EditOutlined from '@mui/icons-material/EditOutlined'
 import { DetailHeader } from '../../../../shared/components/DetailHeader'
 import type { EquipmentDetail } from '../../types/equipment'
-import { StatusBadge } from '../StatusBadge'
+import { EquipmentStatusBadge } from '../EquipmentStatusBadge'
 
-interface DetailsHeaderProps {
+interface EquipmentDetailsHeaderProps {
   equipment: EquipmentDetail
   onBack: () => void
   onChangeStatus: () => void
@@ -14,18 +14,18 @@ interface DetailsHeaderProps {
   onRemove: () => void
 }
 
-export function DetailsHeader({
+export function EquipmentDetailsHeader({
   equipment,
   onBack,
   onChangeStatus,
   onEdit,
   onRemove,
-}: DetailsHeaderProps) {
+}: EquipmentDetailsHeaderProps) {
   return (
     <DetailHeader
       code={equipment.code}
       title={equipment.name}
-      status={<StatusBadge status={equipment.status} />}
+      status={<EquipmentStatusBadge status={equipment.status} />}
       backAction={{
         icon: <ArrowBackOutlined fontSize="small" />,
         label: 'Voltar para equipamentos',
