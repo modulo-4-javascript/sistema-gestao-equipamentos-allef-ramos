@@ -1,4 +1,4 @@
-import { NotesCard, NotesText, Title } from './styles'
+import { DetailTextCard } from '../../../../shared/components/DetailTextCard'
 
 interface EquipmentNotesCardProps {
   notes?: string | null
@@ -6,9 +6,10 @@ interface EquipmentNotesCardProps {
 
 export function EquipmentNotesCard({ notes }: EquipmentNotesCardProps) {
   return (
-    <NotesCard styles={{ body: { padding: 24 } }}>
-      <Title>Observações</Title>
-      <NotesText>{notes || 'Nenhuma observação cadastrada.'}</NotesText>
-    </NotesCard>
+    <DetailTextCard
+      emptyText="Nenhuma observação cadastrada."
+      text={notes}
+      title="Observações"
+    />
   )
 }

@@ -4,7 +4,7 @@ import { getRequestErrorMessage } from '../../../shared/http/getRequestErrorMess
 import { locationService } from '../services/locationService'
 import type { LocationSummaryResponse } from '../types/location'
 
-// AULA 08: hook inicial para os cards de resumo de localizações.
+// Hook do resumo: busca os números usados nos cards do topo.
 export function useLocationSummary(): RequestState<LocationSummaryResponse> {
   const [data, setData] = useState<LocationSummaryResponse>()
   const [isLoading, setIsLoading] = useState(true)

@@ -2,6 +2,7 @@ import { axiosApi } from '../../../services/api'
 import type {
   CreateLocationPayload,
   GetLocationEquipmentParams,
+  GetLocationHistoryParams,
   GetLocationListParams,
   LocationDetails,
   LocationEquipment,
@@ -12,7 +13,7 @@ import type {
   UpdateLocationStatusPayload,
 } from '../types/location'
 
-// AULA 08: service semipronto para os alunos completarem usando equipmentService como modelo.
+// Este service centraliza as chamadas da feature de Localizações para a API.
 export const locationService = {
   async getLocationList(
     params: GetLocationListParams = {},
@@ -94,7 +95,7 @@ export const locationService = {
 
   async getLocationHistory(
     locationId: string,
-    params: { page?: number; pageSize?: number } = {},
+    params: GetLocationHistoryParams = {},
   ): Promise<PaginatedResult<LocationHistoryItem>> {
     const response = await axiosApi.get<PaginatedResult<LocationHistoryItem>>(
       `/locations/${locationId}/equipment-history`,

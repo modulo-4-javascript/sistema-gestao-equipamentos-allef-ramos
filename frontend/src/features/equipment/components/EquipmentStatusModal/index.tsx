@@ -1,16 +1,12 @@
-import { Form, Input, Select } from 'antd'
-import { useEffect } from 'react'
+import { ResourceStatusModal } from '../../../../shared/components/ResourceStatusModal'
+import type { ResourceStatusFormValues } from '../../../../shared/components/ResourceStatusModal'
 import {
   getEquipmentStatusLabel,
   type Equipment,
   type EquipmentStatus,
 } from '../../types/equipment'
-import { CurrentStatusText, StatusModal } from './styles'
 
-export interface EquipmentStatusFormValues {
-  status: EquipmentStatus
-  note?: string
-}
+export type EquipmentStatusFormValues = ResourceStatusFormValues<EquipmentStatus>
 
 interface EquipmentStatusModalProps {
   equipment?: Equipment
@@ -29,64 +25,19 @@ export function EquipmentStatusModal({
   onCancel,
   onSubmit,
 }: EquipmentStatusModalProps) {
-  const [form] = Form.useForm<EquipmentStatusFormValues>()
-
-  useEffect(() => {
-    if (open) {
-      form.setFieldsValue({
-        status: equipment?.status,
-        note: '',
-      })
-    }
-  }, [equipment, form, open])
-
-  function handleSubmit() {
-    form
-      .validateFields()
-      .then((values) => onSubmit(values))
-      .catch(() => undefined)
-  }
-
   return (
-    <StatusModal
-      centered
-      destroyOnHidden
-      open={open}
-      title="Alterar status"
-      okText="Salvar"
-      cancelText="Cancelar"
+    <ResourceStatusModal
       confirmLoading={confirmLoading}
-      width={480}
-      maskStyle={{
-        backdropFilter: 'blur(2px)',
-        background: 'rgb(0 0 0 / 45%)',
-      }}
+      currentStatus={equipment?.status}
+      currentStatusPrefix="Status atual"
+      getStatusLabel={getEquipmentStatusLabel}
+      notePlaceholder="Ex: equipamento enviado para manutenção preventiva."
+      open={open}
+      statusLabel="Novo status"
+      statusOptions={statusOptions}
+      title="Alterar status"
       onCancel={onCancel}
-      onOk={handleSubmit}
-    >
-      <Form form={form} layout="vertical">
-        <Form.Item
-          label="Novo status"
-          name="status"
-          rules={[{ required: true, message: 'Selecione o novo status.' }]}
-        >
-          <Select
-            placeholder="Selecione o status..."
-            options={statusOptions.map((status) => ({
-              label: getEquipmentStatusLabel(status),
-              value: status,
-            }))}
-          />
-        </Form.Item>
-
-        <Form.Item label="Observação" name="note">
-          <Input.TextArea placeholder="Ex: equipamento enviado para manutenção preventiva." />
-        </Form.Item>
-      </Form>
-
-      <CurrentStatusText>
-        Status atual: {equipment ? getEquipmentStatusLabel(equipment.status) : '-'}
-      </CurrentStatusText>
-    </StatusModal>
+      onSubmit={onSubmit}
+    />
   )
 }

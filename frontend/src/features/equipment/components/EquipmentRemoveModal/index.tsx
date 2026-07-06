@@ -1,5 +1,5 @@
+import { ResourceRemoveModal } from '../../../../shared/components/ResourceRemoveModal'
 import type { Equipment } from '../../types/equipment'
-import { Hint, Message, RemoveModal } from './styles'
 
 interface EquipmentRemoveModalProps {
   equipment?: Equipment
@@ -19,24 +19,14 @@ export function EquipmentRemoveModal({
   const equipmentLabel = equipment ? `${equipment.name} ${equipment.model}` : 'este equipamento'
 
   return (
-    <RemoveModal
-      centered
+    <ResourceRemoveModal
+      confirmLoading={confirmLoading}
+      hint="Essa ação não poderá ser desfeita."
+      message={`Deseja excluir "${equipmentLabel}"?`}
       open={open}
       title="Excluir equipamento"
-      okText="Excluir"
-      cancelText="Cancelar"
-      confirmLoading={confirmLoading}
-      okButtonProps={{ danger: true }}
-      width={440}
-      maskStyle={{
-        backdropFilter: 'blur(2px)',
-        background: 'rgb(0 0 0 / 45%)',
-      }}
       onCancel={onCancel}
-      onOk={onConfirm}
-    >
-      <Message>Deseja excluir "{equipmentLabel}"?</Message>
-      <Hint>Essa ação não poderá ser desfeita.</Hint>
-    </RemoveModal>
+      onConfirm={onConfirm}
+    />
   )
 }

@@ -1,9 +1,13 @@
 import { Button } from 'antd'
 import styled from 'styled-components'
 
-export const HeaderContainer = styled.header`
+interface HeaderContainerProps {
+  $hasBackAction: boolean
+}
+
+export const HeaderContainer = styled.header<HeaderContainerProps>`
   display: flex;
-  align-items: flex-start;
+  align-items: ${({ $hasBackAction }) => ($hasBackAction ? 'flex-start' : 'center')};
   justify-content: space-between;
   gap: 24px;
   margin-bottom: 24px;
@@ -35,18 +39,38 @@ export const TitleRow = styled.div`
 
 export const Title = styled.h2`
   margin: 0;
-  color: #002a64;
+  color: #111827;
   font-size: 32px;
   font-weight: 700;
   line-height: 40px;
 `
 
-export const Code = styled.span`
-  display: block;
+export const DetailLine = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
   margin-top: 4px;
+`
+
+export const Code = styled.span`
   color: #6b7280;
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
   font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+`
+
+export const Dot = styled.span`
+  margin-right: 12px;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 20px;
+`
+
+export const MutedText = styled.span`
+  color: #6b7280;
+  font-size: 14px;
   line-height: 20px;
 `
 
@@ -65,13 +89,13 @@ export const BrandButton = styled(Button)`
   &.ant-btn {
     border: 0;
     color: #ffffff;
-    background: linear-gradient(90deg, #002a64, #007c8c);
+    background: linear-gradient(90deg, #1f5ca8, #007c8c);
     box-shadow: 0 4px 8px rgb(0 42 100 / 12%);
   }
 
   &.ant-btn:hover,
   &.ant-btn:focus {
     color: #ffffff !important;
-    background: linear-gradient(90deg, #003f8f, #007c8c) !important;
+    background: linear-gradient(90deg, #1f5ca8, #007c8c) !important;
   }
 `

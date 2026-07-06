@@ -3,32 +3,32 @@ import AutorenewOutlined from '@mui/icons-material/AutorenewOutlined'
 import DeleteOutlineOutlined from '@mui/icons-material/DeleteOutlineOutlined'
 import EditOutlined from '@mui/icons-material/EditOutlined'
 import { DetailHeader } from '../../../../shared/components/DetailHeader'
-import type { EquipmentDetail } from '../../types/equipment'
-import { StatusBadge } from '../StatusBadge'
+import type { LocationDetails } from '../../types/location'
+import { LocationStatusBadge } from '../LocationStatusBadge'
 
-interface DetailsHeaderProps {
-  equipment: EquipmentDetail
+interface LocationDetailsHeaderProps {
+  location: LocationDetails
   onBack: () => void
   onChangeStatus: () => void
   onEdit: () => void
   onRemove: () => void
 }
 
-export function DetailsHeader({
-  equipment,
+export function LocationDetailsHeader({
+  location,
   onBack,
   onChangeStatus,
   onEdit,
   onRemove,
-}: DetailsHeaderProps) {
+}: LocationDetailsHeaderProps) {
   return (
     <DetailHeader
-      code={equipment.code}
-      title={equipment.name}
-      status={<StatusBadge status={equipment.status} />}
+      code={location.code}
+      title={location.name}
+      status={<LocationStatusBadge status={location.status} />}
       backAction={{
         icon: <ArrowBackOutlined fontSize="small" />,
-        label: 'Voltar para equipamentos',
+        label: 'Voltar para localizações',
         onClick: onBack,
       }}
       actions={[

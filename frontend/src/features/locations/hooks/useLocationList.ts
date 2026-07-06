@@ -8,7 +8,7 @@ import type {
   PaginatedResult,
 } from '../types/location'
 
-// AULA 08: primeiro hook de localizações, espelhado no useEquipmentList.
+// Hook da listagem: guarda dados, loading e erro, e recarrega quando os filtros mudam.
 export function useLocationList(
   params: GetLocationListParams,
 ): RequestState<PaginatedResult<LocationDetails>> {
