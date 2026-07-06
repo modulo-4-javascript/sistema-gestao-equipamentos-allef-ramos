@@ -15,6 +15,7 @@ export const ListCard = styled(Card)`
     display: flex;
     height: 100%;
     flex-direction: column;
+    overflow: hidden;
   }
 `
 
@@ -42,28 +43,37 @@ export const StateBox = styled.div`
 `
 
 export const Timeline = styled.ol`
-  position: relative;
   display: grid;
-  gap: 24px;
+  flex: 1;
   max-height: 310px;
   margin: 0;
+  margin-right: -6px;
+  min-height: 0;
+  overflow-x: hidden;
   overflow-y: auto;
-  padding: 0 8px 0 30px;
+  padding: 0 18px 0 30px;
+  scrollbar-color: #c7d2e0 transparent;
+  scrollbar-width: thin;
   list-style: none;
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 7px;
-    bottom: 16px;
-    left: 7px;
-    width: 1px;
-    background: #dde6ee;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c7d2e0;
+    border-radius: 999px;
   }
 `
 
 export const Event = styled.li`
   position: relative;
+  min-height: 72px;
+  padding-bottom: 24px;
 
   &::before {
     content: '';
@@ -75,6 +85,25 @@ export const Event = styled.li`
     background: #007c8c;
     border-radius: 999px;
     box-shadow: 0 0 0 3px #ffffff;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 18px;
+    bottom: -6px;
+    left: -24px;
+    width: 1px;
+    background: #dde6ee;
+  }
+
+  &:last-child {
+    min-height: auto;
+    padding-bottom: 0;
+  }
+
+  &:last-child::after {
+    display: none;
   }
 
   .ant-btn-link {

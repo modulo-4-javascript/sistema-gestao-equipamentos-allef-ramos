@@ -23,6 +23,29 @@ a solução pronta aos alunos.
 - hooks de leitura e escrita espelhando o padrão de Equipamentos.
 - componentes comuns de detalhe e modais extraídos para `shared/components`.
 
+## Regra didática de organização
+
+Use esta regra para explicar o projeto:
+
+- `page`: junta estado da tela, hooks e handlers;
+- `hook`: controla loading, erro e chamada do service;
+- `service`: conhece a URL da API;
+- `component` da feature: traduz regra de negócio da feature;
+- `shared/components`: renderiza UI genérica reutilizável.
+
+Exemplos:
+
+```txt
+EquipmentStatusBadge e LocationStatusBadge traduzem status da feature.
+StatusPill só renderiza label + cor.
+
+EquipmentRemoveModal e LocationRemoveModal definem textos da feature.
+RemoveModal só renderiza o modal de confirmação.
+
+EquipmentStatusModal e LocationStatusModal definem labels/opções da feature.
+StatusModal só renderiza o formulário genérico de status.
+```
+
 ## Arquitetura da solução
 
 ```mermaid
@@ -65,8 +88,8 @@ frontend/src/shared/components/DetailHeader
 frontend/src/shared/components/DetailSummaryCards
 frontend/src/shared/components/DetailInfoCard
 frontend/src/shared/components/DetailTextCard
-frontend/src/shared/components/ResourceRemoveModal
-frontend/src/shared/components/ResourceStatusModal
+frontend/src/shared/components/RemoveModal
+frontend/src/shared/components/StatusModal
 frontend/src/shared/components/StatusPill
 ```
 

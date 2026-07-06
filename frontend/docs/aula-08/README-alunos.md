@@ -6,6 +6,12 @@ Equipamentos foi repetida em outra feature.
 Os blocos visuais que são comuns aos dois módulos ficam em `shared/components`;
 os arquivos dentro de cada feature apenas adaptam os dados específicos.
 
+A ideia didática desta aula é separar responsabilidade:
+
+- `shared`: componentes visuais genéricos, sem regra de Equipamentos ou Localizações;
+- `features/equipment`: tradução dos dados e regras de equipamentos;
+- `features/locations`: tradução dos dados e regras de localizações.
+
 ## O que observar primeiro
 
 O padrão principal continua sendo:
@@ -82,9 +88,29 @@ frontend/src/shared/components/DetailHeader
 frontend/src/shared/components/DetailSummaryCards
 frontend/src/shared/components/DetailInfoCard
 frontend/src/shared/components/DetailTextCard
-frontend/src/shared/components/ResourceRemoveModal
-frontend/src/shared/components/ResourceStatusModal
+frontend/src/shared/components/RemoveModal
+frontend/src/shared/components/StatusModal
+frontend/src/shared/components/StatusPill
 ```
+
+## Como ler os componentes compartilhados
+
+Um componente compartilhado recebe dados prontos para exibir. Por exemplo,
+`StatusPill` recebe `label` e `tone`, mas não sabe o que é `ACTIVE`,
+`INACTIVE` ou `AVAILABLE`.
+
+Quem sabe traduzir regra de negócio é a feature:
+
+```txt
+LocationStatusBadge -> usa StatusPill para exibir ACTIVE/INACTIVE
+EquipmentStatusBadge -> usa StatusPill para exibir AVAILABLE/IN_MAINTENANCE/INACTIVE
+LocationRemoveModal -> usa RemoveModal com texto de localizações
+EquipmentRemoveModal -> usa RemoveModal com texto de equipamentos
+LocationStatusModal -> usa StatusModal com labels de localização
+EquipmentStatusModal -> usa StatusModal com labels de equipamento
+```
+
+Esse padrão evita duplicação visual sem esconder a regra da feature.
 
 ## Contratos importantes
 
@@ -108,4 +134,5 @@ frontend/src/shared/components/ResourceStatusModal
 - Detalhe mostra equipamentos vinculados.
 - Detalhe segue o mesmo padrão visual da tela de detalhes de Equipamentos.
 - Equipamentos continua funcionando.
+- Componentes compartilhados são usados quando não dependem da regra da feature.
 - `npm run lint` e `npm run build` passam no frontend.
